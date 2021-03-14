@@ -1,8 +1,15 @@
+from __future__ import unicode_literals
+
+import uuid
+import datetime
+
+from django.shortcuts import reverse
 from django.db import models
 from django.core.mail import send_mail
 from django.contrib.auth.models import PermissionsMixin
 from django.contrib.auth.base_user import AbstractBaseUser
 from django.utils.translation import ugettext_lazy as _
+from django.utils import timezone
 
 from . managers import UserManager
 
@@ -37,3 +44,38 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def email_user(self, subject, message, from_email=None, **kwargs):
         send_mail(subject, message, from_email, [self.email], **kwargs)
+
+
+class Invite(models.Model):
+    uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    email =  models.EmailField(unique=True, max_length=255)
+    date_sent = models.DateTimeField(default=timezone.now)
+    is_active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.email
+
+    def email_invite(self, activation_link, from_email=None, **kwargs):
+        subject = 'confirm registration'
+        message = 'please confirm your fehler account ' + activation_link
+        send_mail(subject, message, from_email, [self.email], **kwargs)
+
+    def get_absolute_url(self, user, domain):
+        from django.utils.encoding import force_bytes
+        from django.utils.http import urlsafe_base64_encode
+        from . utils import token_generator
+
+        uid64 = urlsafe_base64_encode(force_bytes(user.pk))
+
+        # link = reverse('activate', kwargs={'org':org, 'uid64': uid64, 'token': token_generator.make_token(user)})
+        link = reverse('activate', kwargs={'uid64': uid64, 'token': token_generator.make_token(user)})
+        activation_url = 'http//' + domain + link
+
+        return activation_url
+
+    def is_valid(self):
+        if self.is_active:
+            expiration_date = (self.date_sent + datetime.timedelta(days=2))
+            if expiration_date >= timezone.now():
+                return True
+        return False
