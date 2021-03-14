@@ -134,3 +134,5 @@ REST_FRAMEWORK = {
         'fehler_auth.authentication.ExpiringTokenAuthentication',
     )
 }
+  
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
