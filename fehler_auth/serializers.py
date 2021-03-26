@@ -1,10 +1,11 @@
 from rest_framework import serializers
 
-from . models import User
+from .models import User, Invite
+
+from spaces.models import Space
 
 
 class RegisterUserSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = User
         fields = ('email', 'password', 'first_name', 'last_name')
@@ -17,3 +18,9 @@ class RegisterUserSerializer(serializers.ModelSerializer):
             instance.set_password(password)
         instance.save()
         return instance
+
+
+class InviteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Invite
+        fields = ('email', 'member_type', 'space')

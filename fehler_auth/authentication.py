@@ -9,7 +9,6 @@ from rest_framework.authentication import TokenAuthentication
 
 
 class ExpiringTokenAuthentication(TokenAuthentication):
-
     def authenticate_credentials(self, key):
         model = self.get_model()
         try:

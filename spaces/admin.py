@@ -1,3 +1,7 @@
 from django.contrib import admin
 
-# Register your models here.
+from .models import Space, Membership
+
+
+admin.site.register(Space)
+admin.site.register(Membership)
