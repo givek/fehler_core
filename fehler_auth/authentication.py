@@ -14,16 +14,16 @@ class ExpiringTokenAuthentication(TokenAuthentication):
         try:
             token = model.objects.get(key=key)
         except model.DoesNotExist:
-            raise exceptions.AuthenticationFailed('Invalid token')
+            raise exceptions.AuthenticationFailed("Invalid token")
 
         if not token.user.is_active:
-            raise exceptions.AuthenticationFailed('User inactive or deleted')
+            raise exceptions.AuthenticationFailed("User inactive or deleted")
 
         # This is required for the time comparison
         utc_now = datetime.now(dtime.timezone.utc)
         utc_now = utc_now.replace(tzinfo=pytz.utc)
 
         if token.created < utc_now - timedelta(minutes=2):
-            raise exceptions.AuthenticationFailed('Token has expired')
+            raise exceptions.AuthenticationFailed("Token has expired")
 
         return token.user, token
