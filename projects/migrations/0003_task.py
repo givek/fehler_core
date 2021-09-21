@@ -10,22 +10,55 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('projects', '0002_project_space'),
+        ("projects", "0002_project_space"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Task',
+            name="Task",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=120)),
-                ('type', models.CharField(max_length=120)),
-                ('description', models.TextField()),
-                ('labels', models.CharField(max_length=120)),
-                ('date_created', models.DateTimeField(default=django.utils.timezone.now)),
-                ('assignee', models.OneToOneField(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='task_assignee', to=settings.AUTH_USER_MODEL)),
-                ('project', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='projects.Project')),
-                ('reporter', models.OneToOneField(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='task_reporter', to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=120)),
+                ("type", models.CharField(max_length=120)),
+                ("description", models.TextField()),
+                ("labels", models.CharField(max_length=120)),
+                (
+                    "date_created",
+                    models.DateTimeField(default=django.utils.timezone.now),
+                ),
+                (
+                    "assignee",
+                    models.OneToOneField(
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        related_name="task_assignee",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
+                (
+                    "project",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        to="projects.Project",
+                    ),
+                ),
+                (
+                    "reporter",
+                    models.OneToOneField(
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        related_name="task_reporter",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
     ]

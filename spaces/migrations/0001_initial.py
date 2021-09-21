@@ -12,72 +12,78 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('fehler_auth', '0002_invite'),
+        ("fehler_auth", "0002_invite"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Membership',
+            name="SpaceMembership",
             fields=[
                 (
-                    'id',
+                    "id",
                     models.AutoField(
                         auto_created=True,
                         primary_key=True,
                         serialize=False,
-                        verbose_name='ID',
+                        verbose_name="ID",
                     ),
                 ),
-                ('date_joined', models.DateTimeField(default=django.utils.timezone.now),),
                 (
-                    'type_of_member',
+                    "date_joined",
+                    models.DateTimeField(default=django.utils.timezone.now),
+                ),
+                (
+                    "type_of_member",
                     models.CharField(
                         blank=True,
                         choices=[
-                            ('ADMIN', 'Admin'),
-                            ('PROJECT_MANAGER', 'ProjectManager'),
-                            ('TEAM_LEAD', 'TeamLead'),
+                            ("ADMIN", "Admin"),
+                            ("PROJECT_MANAGER", "ProjectManager"),
+                            ("TEAM_LEAD", "TeamLead"),
                         ],
                         max_length=50,
                         null=True,
                     ),
                 ),
                 (
-                    'invite',
+                    "invite",
                     models.ForeignKey(
                         null=True,
                         on_delete=django.db.models.deletion.CASCADE,
-                        to='fehler_auth.Invite',
+                        to="fehler_auth.Invite",
                     ),
                 ),
             ],
         ),
         migrations.CreateModel(
-            name='Space',
+            name="Space",
             fields=[
                 (
-                    'id',
+                    "id",
                     models.AutoField(
                         auto_created=True,
                         primary_key=True,
                         serialize=False,
-                        verbose_name='ID',
+                        verbose_name="ID",
                     ),
                 ),
-                ('name', models.CharField(max_length=100)),
-                ('is_active', models.BooleanField(default=True)),
-                ('date_created', models.DateTimeField(default=django.utils.timezone.now),),
+                ("name", models.CharField(max_length=100)),
+                ("is_active", models.BooleanField(default=True)),
                 (
-                    'members',
+                    "date_created",
+                    models.DateTimeField(default=django.utils.timezone.now),
+                ),
+                (
+                    "members",
                     models.ManyToManyField(
-                        related_name='space_members',
-                        through='spaces.Membership',
+                        related_name="space_members",
+                        through="spaces.SpaceMembership",
                         to=settings.AUTH_USER_MODEL,
                     ),
                 ),
                 (
-                    'owner',
+                    "owner",
                     models.OneToOneField(
                         on_delete=django.db.models.deletion.CASCADE,
                         to=settings.AUTH_USER_MODEL,
@@ -86,38 +92,56 @@ class Migration(migrations.Migration):
             ],
         ),
         migrations.AddField(
-            model_name='membership',
-            name='space',
+            model_name="SpaceMembership",
+            name="space",
             field=models.ForeignKey(
-                on_delete=django.db.models.deletion.CASCADE, to='spaces.Space'
+                on_delete=django.db.models.deletion.CASCADE, to="spaces.Space"
             ),
         ),
         migrations.AddField(
-            model_name='membership',
-            name='user',
+            model_name="SpaceMembership",
+            name="user",
             field=models.ForeignKey(
                 on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL
             ),
         ),
         migrations.CreateModel(
-            name='Admin',
+            name="Admin",
             fields=[],
-            options={'proxy': True, 'indexes': [], 'constraints': [],},
-            bases=('spaces.membership',),
-            managers=[('objects', spaces.managers.AdminManager()),],
+            options={
+                "proxy": True,
+                "indexes": [],
+                "constraints": [],
+            },
+            bases=("spaces.SpaceMembership",),
+            managers=[
+                ("objects", spaces.managers.AdminManager()),
+            ],
         ),
         migrations.CreateModel(
-            name='ProjectManager',
+            name="ProjectManager",
             fields=[],
-            options={'proxy': True, 'indexes': [], 'constraints': [],},
-            bases=('spaces.membership',),
-            managers=[('objects', spaces.managers.ProjectManagerManager()),],
+            options={
+                "proxy": True,
+                "indexes": [],
+                "constraints": [],
+            },
+            bases=("spaces.SpaceMembership",),
+            managers=[
+                ("objects", spaces.managers.ProjectManagerManager()),
+            ],
         ),
         migrations.CreateModel(
-            name='TeamLead',
+            name="TeamLead",
             fields=[],
-            options={'proxy': True, 'indexes': [], 'constraints': [],},
-            bases=('spaces.membership',),
-            managers=[('objects', spaces.managers.TeamLeadManager()),],
+            options={
+                "proxy": True,
+                "indexes": [],
+                "constraints": [],
+            },
+            bases=("spaces.SpaceMembership",),
+            managers=[
+                ("objects", spaces.managers.TeamLeadManager()),
+            ],
         ),
     ]

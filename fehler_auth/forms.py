@@ -40,27 +40,29 @@ class EmailLowerField(forms.EmailField):
 class UserInviteForm(forms.ModelForm):
     email = EmailLowerField(
         required=True,
-        label='email',
-        widget=forms.TextInput(attrs={'placeholder': 'john@example.com'}),
+        label="email",
+        widget=forms.TextInput(attrs={"placeholder": "john@example.com"}),
     )
 
     class Meta:
         model = Invite
-        fields = ['email', 'member_type']
+        fields = ["email", "member_type"]
 
 
 class UserInviteRegisterForm(forms.ModelForm):
-    password = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder': '●●●●●●●●●●'}))
+    password = forms.CharField(
+        widget=forms.PasswordInput(attrs={"placeholder": "●●●●●●●●●●"})
+    )
 
     class Meta:
         model = User
-        fields = ['password']
+        fields = ["password"]
 
 
 # from django import forms
 # from django.forms import ModelForm
 
-# from . models import Organistion, Membership
+# from . models import Organistion, SpaceMembership
 # from fehler_auth.forms import EmailLowerField
 
 

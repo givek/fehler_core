@@ -7,16 +7,18 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('spaces', '0001_initial'),
-        ('fehler_auth', '0002_invite'),
+        ("spaces", "0001_initial"),
+        ("fehler_auth", "0002_invite"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='invite',
-            name='space',
+            model_name="invite",
+            name="space",
             field=models.ForeignKey(
-                default=1, on_delete=django.db.models.deletion.CASCADE, to='spaces.Space',
+                default=1,
+                on_delete=django.db.models.deletion.CASCADE,
+                to="spaces.Space",
             ),
             preserve_default=False,
         ),

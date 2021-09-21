@@ -7,15 +7,19 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('spaces', '0001_initial'),
-        ('projects', '0001_initial'),
+        ("spaces", "0001_initial"),
+        ("projects", "0001_initial"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='project',
-            name='space',
-            field=models.ForeignKey(default=1, on_delete=django.db.models.deletion.CASCADE, to='spaces.Space'),
+            model_name="project",
+            name="space",
+            field=models.ForeignKey(
+                default=1,
+                on_delete=django.db.models.deletion.CASCADE,
+                to="spaces.Space",
+            ),
             preserve_default=False,
         ),
     ]

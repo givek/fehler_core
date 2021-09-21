@@ -5,7 +5,9 @@ class AdminManager(models.Manager):
     use_in_migrations = True
 
     def get_queryset(self, *args, **kwargs):
-        return super().get_queryset(*args, **kwargs).filter(member_type=self.model.ADMIN)
+        return (
+            super().get_queryset(*args, **kwargs).filter(member_type=self.model.ADMIN)
+        )
 
 
 class ProjectManagerManager(models.Manager):
@@ -23,4 +25,8 @@ class TeamLeadManager(models.Manager):
     use_in_migrations = True
 
     def get_queryset(self, *args, **kwargs):
-        return super().get_queryset(*args, **kwargs).filter(member_type=self.model.TEAM_LEAD)
+        return (
+            super()
+            .get_queryset(*args, **kwargs)
+            .filter(member_type=self.model.TEAM_LEAD)
+        )

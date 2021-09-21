@@ -17,7 +17,7 @@ class Project(models.Model):
 
     def get_tasks(self):
         return self.task_set.all()
-    
+
     def get_members(self):
         return self.members.all()
 

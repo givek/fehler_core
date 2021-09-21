@@ -8,22 +8,25 @@ import uuid
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('fehler_auth', '0001_initial'),
+        ("fehler_auth", "0001_initial"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Invite',
+            name="Invite",
             fields=[
                 (
-                    'uuid',
+                    "uuid",
                     models.UUIDField(
-                        default=uuid.uuid4, editable=False, primary_key=True, serialize=False,
+                        default=uuid.uuid4,
+                        editable=False,
+                        primary_key=True,
+                        serialize=False,
                     ),
                 ),
-                ('email', models.EmailField(max_length=255, unique=True)),
-                ('date_sent', models.DateTimeField(default=django.utils.timezone.now)),
-                ('is_active', models.BooleanField(default=True)),
+                ("email", models.EmailField(max_length=255, unique=True)),
+                ("date_sent", models.DateTimeField(default=django.utils.timezone.now)),
+                ("is_active", models.BooleanField(default=True)),
             ],
         ),
     ]
