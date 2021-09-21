@@ -1,7 +1,7 @@
 from django.contrib import admin
 
-from .models import Space, Membership
+from .models import Space, SpaceMembership
 
 
 admin.site.register(Space)
-admin.site.register(Membership)
+admin.site.register(SpaceMembership)

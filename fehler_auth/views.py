@@ -21,7 +21,7 @@ from .models import User, Invite
 from .forms import UserInviteForm, UserInviteRegisterForm
 from .utils import token_generator
 
-from spaces.models import Space, Membership
+from spaces.models import Space, SpaceMembership
 
 
 class RegisterUser(APIView):
@@ -104,7 +104,7 @@ class VerificationView(View):
         if not invite.is_valid():
             return HttpResponseNotFound("<h1>invite not found</h1>")
 
-        self.create_membership(user, invite, space_id)
+        self.create_space_membership(user, invite, space_id)
 
         # data = {'email': user.email}
         form = self.form_class()
@@ -125,10 +125,10 @@ class VerificationView(View):
 
         return render(request, self.template_name, {"form": form})
 
-    def create_membership(self, user, invite, space_id):
+    def create_space_membership(self, user, invite, space_id):
         space = Space.objects.get(id=space_id)
         # invite = Invite.objects.get(email=user.email)
-        member = Membership.objects.create(
+        member = SpaceMembership.objects.create(
             user=user, space=space, invite=invite, type_of_member=invite.member_type
         )
         member.save()

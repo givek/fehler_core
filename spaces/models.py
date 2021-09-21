@@ -8,7 +8,7 @@ class Space(models.Model):
     name = models.CharField(max_length=100)
     owner = models.OneToOneField("fehler_auth.User", on_delete=models.CASCADE)
     members = models.ManyToManyField(
-        "fehler_auth.User", through="Membership", related_name="space_members"
+        "fehler_auth.User", through="SpaceMembership", related_name="space_members"
     )
     is_active = models.BooleanField(default=True)
     date_created = models.DateTimeField(default=timezone.now)
@@ -26,7 +26,7 @@ class Space(models.Model):
         return self.members.all()
 
 
-class Membership(models.Model):
+class SpaceMembership(models.Model):
     ADMIN = "ADMIN"
     PROJECT_MANAGER = "PROJECT_MANAGER"
     TEAM_LEAD = "TEAM_LEAD"
@@ -51,7 +51,7 @@ class Membership(models.Model):
         return self.user.email
 
 
-class Admin(Membership):
+class Admin(SpaceMembership):
     objects = AdminManager()
 
     class Meta:
@@ -59,14 +59,14 @@ class Admin(Membership):
 
     def save(self, *args, **kwargs):
         if not self.pk:
-            self.member_type = Membership.ADMIN
+            self.member_type = SpaceMembership.ADMIN
         return super().save(*args, **kwargs)
 
     def is_admin(self):
         return "i am admin"
 
 
-class ProjectManager(Membership):
+class ProjectManager(SpaceMembership):
     objects = ProjectManagerManager()
 
     class Meta:
@@ -74,14 +74,14 @@ class ProjectManager(Membership):
 
     def save(self, *args, **kwargs):
         if not self.pk:
-            self.member_type = Membership.PROJECT_MANAGER
+            self.member_type = SpaceMembership.PROJECT_MANAGER
         return super().save(*args, **kwargs)
 
     def is_projectmanger(self):
         return "i am project manager"
 
 
-class TeamLead(Membership):
+class TeamLead(SpaceMembership):
     objects = TeamLeadManager()
 
     class Meta:
@@ -89,7 +89,7 @@ class TeamLead(Membership):
 
     def save(self, *args, **kwargs):
         if not self.pk:
-            self.member_type = Membership.TEAM_LEAD
+            self.member_type = SpaceMembership.TEAM_LEAD
         return super().save(*args, **kwargs)
 
     def is_teamlead(self):
