@@ -1,16 +1,21 @@
 from django.urls import path
 
-from . import views
+from .views import (
+    RegisterUser,
+    ObtainExpiringAuthToken,
+    InviteUserApi,
+    VerificationView,
+)
 
 
 urlpatterns = [
-    path("register", views.RegisterUser.as_view(), name="create_user"),
-    path("token", views.ObtainExpiringAuthToken.as_view(), name="token_obtain"),
+    path("register", RegisterUser.as_view(), name="create_user"),
+    path("token", ObtainExpiringAuthToken.as_view(), name="token_obtain"),
     # path('<space_id>/invite/', views.UserInvite.as_view(), name='invite'),
-    path("invite/", views.InviteUserApi.as_view(), name="inviteapi"),
+    path("invite/", InviteUserApi.as_view(), name="inviteapi"),
     path(
         "<space_id>/activate/<uid64>/<token>",
-        views.VerificationView.as_view(),
+        VerificationView.as_view(),
         name="activate",
     ),
 ]
