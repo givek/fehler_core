@@ -1,9 +1,8 @@
 from django.urls import path
 
-from . import views
+from .views import CreateSpace, ListSpaces
 
 
 urlpatterns = [
-    # path('spaces/<int:user_id>', views.space_list_view, name='space_list'),
-    path("spaces/<int:user_id>", views.SpaceListView.as_view(), name="space_list"),
+    path("spaces/<int:user_id>", ListSpaces.as_view(), name="list_spaces"),
 ]
