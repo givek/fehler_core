@@ -5,6 +5,7 @@ from .views import (
     ObtainExpiringAuthToken,
     InviteUserApi,
     VerificationView,
+    UserDetails,
 )
 
 
@@ -18,4 +19,5 @@ urlpatterns = [
         VerificationView.as_view(),
         name="activate",
     ),
+    path("user-details", UserDetails.as_view(), name="user_details"),
 ]

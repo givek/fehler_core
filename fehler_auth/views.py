@@ -24,6 +24,28 @@ from .utils import token_generator
 from spaces.models import Space, SpaceMembership
 
 
+class UserDetails(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        """
+        Return details of current authenticated user.
+        """
+        token = request.data["token"]
+        user = Token.objects.get(key=token).user
+        if user:
+            user_data = {
+                "user": {
+                    "id": user.id,
+                    "email": user.email,
+                    "first_name": user.first_name,
+                    "last_name": user.last_name,
+                }
+            }
+            return Response(user_data, status=status.HTTP_200_OK)
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
 class RegisterUser(APIView):
     permission_classes = [AllowAny]
 
