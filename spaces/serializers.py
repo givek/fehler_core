@@ -6,4 +6,4 @@ from .models import Space
 class SpaceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Space
-        fields = ["name", "owner"]
+        fields = ["name"]

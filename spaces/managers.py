@@ -1,6 +1,15 @@
 from django.db import models
 
 
+class OwnerManager(models.Manager):
+    use_in_migrations = True
+
+    def get_queryset(self, *args, **kwargs):
+        return (
+            super().get_queryset(*args, **kwargs).filter(member_type=self.model.Owner)
+        )
+
+
 class AdminManager(models.Manager):
     use_in_migrations = True
 
@@ -10,23 +19,23 @@ class AdminManager(models.Manager):
         )
 
 
-class ProjectManagerManager(models.Manager):
-    use_in_migrations = True
+# class ProjectManagerManager(models.Manager):
+#     use_in_migrations = True
 
-    def get_queryset(self, *args, **kwargs):
-        return (
-            super()
-            .get_queryset(*args, **kwargs)
-            .filter(member_type=self.model.PROJECT_MANAGER)
-        )
+#     def get_queryset(self, *args, **kwargs):
+#         return (
+#             super()
+#             .get_queryset(*args, **kwargs)
+#             .filter(member_type=self.model.PROJECT_MANAGER)
+#         )
 
 
-class TeamLeadManager(models.Manager):
-    use_in_migrations = True
+# class TeamLeadManager(models.Manager):
+#     use_in_migrations = True
 
-    def get_queryset(self, *args, **kwargs):
-        return (
-            super()
-            .get_queryset(*args, **kwargs)
-            .filter(member_type=self.model.TEAM_LEAD)
-        )
+#     def get_queryset(self, *args, **kwargs):
+#         return (
+#             super()
+#             .get_queryset(*args, **kwargs)
+#             .filter(member_type=self.model.TEAM_LEAD)
+#         )

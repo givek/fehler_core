@@ -1,12 +1,12 @@
 from django.db import models
 from django.utils import timezone
 
-from .managers import AdminManager, ProjectManagerManager, TeamLeadManager
+from .managers import AdminManager, OwnerManager
 
 
 class Space(models.Model):
-    name = models.CharField(max_length=100)
-    owner = models.OneToOneField("fehler_auth.User", on_delete=models.CASCADE)
+    name = models.CharField(max_length=100, unique=True)
+    # owner = models.OneToOneField("fehler_auth.User", on_delete=models.CASCADE)
     members = models.ManyToManyField(
         "fehler_auth.User", through="SpaceMembership", related_name="space_members"
     )
@@ -27,28 +27,41 @@ class Space(models.Model):
 
 
 class SpaceMembership(models.Model):
+    OWNER = "OWNER"
     ADMIN = "ADMIN"
-    PROJECT_MANAGER = "PROJECT_MANAGER"
-    TEAM_LEAD = "TEAM_LEAD"
 
     TYPE_OF_MEMBER_CHOICES = [
+        (OWNER, "Owner"),
         (ADMIN, "Admin"),
-        (PROJECT_MANAGER, "ProjectManager"),
-        (TEAM_LEAD, "TeamLead"),
     ]
 
-    user = models.ForeignKey("fehler_auth.User", on_delete=models.CASCADE)
+    member = models.ForeignKey("fehler_auth.User", on_delete=models.CASCADE)
     space = models.ForeignKey(Space, on_delete=models.CASCADE)
     invite = models.ForeignKey(
-        "fehler_auth.Invite", null=True, on_delete=models.CASCADE
+        "fehler_auth.Invite", blank=True, null=True, on_delete=models.CASCADE
     )
     date_joined = models.DateTimeField(default=timezone.now)
     type_of_member = models.CharField(
-        max_length=50, choices=TYPE_OF_MEMBER_CHOICES, blank=True, null=True
+        max_length=25, choices=TYPE_OF_MEMBER_CHOICES, blank=True, null=True
     )
 
     def __str__(self):
-        return self.user.email
+        return self.member.email
+
+
+class Owner(SpaceMembership):
+    objects = OwnerManager()
+
+    class Meta:
+        proxy = True
+
+    def save(self, *args, **kwargs):
+        if not self.pk:
+            self.member_type = SpaceMembership.OWNER
+        return super().save(*args, **kwargs)
+
+    def is_admin(self):
+        return "i am owner"
 
 
 class Admin(SpaceMembership):
@@ -66,31 +79,31 @@ class Admin(SpaceMembership):
         return "i am admin"
 
 
-class ProjectManager(SpaceMembership):
-    objects = ProjectManagerManager()
+# class ProjectManager(SpaceMembership):
+#     objects = ProjectManagerManager()
 
-    class Meta:
-        proxy = True
+#     class Meta:
+#         proxy = True
 
-    def save(self, *args, **kwargs):
-        if not self.pk:
-            self.member_type = SpaceMembership.PROJECT_MANAGER
-        return super().save(*args, **kwargs)
+#     def save(self, *args, **kwargs):
+#         if not self.pk:
+#             self.member_type = SpaceMembership.PROJECT_MANAGER
+#         return super().save(*args, **kwargs)
 
-    def is_projectmanger(self):
-        return "i am project manager"
+#     def is_projectmanger(self):
+#         return "i am project manager"
 
 
-class TeamLead(SpaceMembership):
-    objects = TeamLeadManager()
+# class TeamLead(SpaceMembership):
+#     objects = TeamLeadManager()
 
-    class Meta:
-        proxy = True
+#     class Meta:
+#         proxy = True
 
-    def save(self, *args, **kwargs):
-        if not self.pk:
-            self.member_type = SpaceMembership.TEAM_LEAD
-        return super().save(*args, **kwargs)
+#     def save(self, *args, **kwargs):
+#         if not self.pk:
+#             self.member_type = SpaceMembership.TEAM_LEAD
+#         return super().save(*args, **kwargs)
 
-    def is_teamlead(self):
-        return "i am team lead"
+#     def is_teamlead(self):
+#         return "i am team lead"
