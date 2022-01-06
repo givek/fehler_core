@@ -5,9 +5,11 @@ from django.utils import timezone
 class Project(models.Model):
     name = models.CharField(max_length=100)
     space = models.ForeignKey("spaces.Space", on_delete=models.CASCADE)
-    lead = models.OneToOneField("fehler_auth.User", on_delete=models.CASCADE)
+    # lead = models.OneToOneField("fehler_auth.User", on_delete=models.CASCADE)
     members = models.ManyToManyField(
-        "fehler_auth.User", through="ProjectMembership", related_name="project_members"
+        "spaces.SpaceMembership",
+        through="ProjectMembership",
+        related_name="project_members",
     )
     is_active = models.BooleanField(default=True)
     date_created = models.DateTimeField(default=timezone.now)
@@ -23,7 +25,7 @@ class Project(models.Model):
 
 
 class ProjectMembership(models.Model):
-    user = models.ForeignKey("fehler_auth.User", on_delete=models.CASCADE)
+    member = models.ForeignKey("spaces.SpaceMembership", on_delete=models.CASCADE)
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
     date_joined = models.DateTimeField(default=timezone.now)
 
