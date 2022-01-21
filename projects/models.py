@@ -7,7 +7,7 @@ class Project(models.Model):
     space = models.ForeignKey("spaces.Space", on_delete=models.CASCADE)
     # lead = models.OneToOneField("fehler_auth.User", on_delete=models.CASCADE)
     members = models.ManyToManyField(
-        "spaces.SpaceMembership",
+        "fehler_auth.User",
         through="ProjectMembership",
         related_name="project_members",
     )
@@ -25,8 +25,8 @@ class Project(models.Model):
 
 
 class ProjectMembership(models.Model):
-    member = models.ForeignKey("spaces.SpaceMembership", on_delete=models.CASCADE)
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    user = models.ForeignKey("fehler_auth.User", on_delete=models.CASCADE)
     date_joined = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
