@@ -37,7 +37,7 @@ class Task(models.Model):
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
     type = models.CharField(max_length=120)
     description = models.TextField()
-    assignee = models.OneToOneField(
+    assignee = models.ForeignKey(
         "fehler_auth.User",
         null=True,
         on_delete=models.SET_NULL,
@@ -45,7 +45,7 @@ class Task(models.Model):
         unique=False
     )
     labels = models.CharField(max_length=120)
-    reporter = models.OneToOneField(
+    reporter = models.ForeignKey(
         "fehler_auth.User",
         null=True,
         on_delete=models.SET_NULL,
