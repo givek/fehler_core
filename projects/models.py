@@ -25,7 +25,7 @@ class Project(models.Model):
 
 class ProjectMembership(models.Model):
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
-    user = models.ForeignKey("fehler_auth.User", on_delete=models.CASCADE, null=True)
+    user = models.ForeignKey("fehler_auth.User", on_delete=models.CASCADE)
     date_joined = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
