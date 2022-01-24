@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils import timezone
 
+
 class Project(models.Model):
     name = models.CharField(max_length=100, unique=True)
     space = models.ForeignKey("spaces.Space", on_delete=models.CASCADE)
@@ -42,7 +43,6 @@ class Task(models.Model):
         null=True,
         on_delete=models.SET_NULL,
         related_name="task_assignee",
-        unique=False
     )
     labels = models.CharField(max_length=120)
     reporter = models.ForeignKey(
@@ -50,8 +50,6 @@ class Task(models.Model):
         null=True,
         on_delete=models.SET_NULL,
         related_name="task_reporter",
-        unique=False
-
     )
     status = models.CharField(max_length=120)
     date_created = models.DateTimeField(default=timezone.now)
