@@ -1,9 +1,8 @@
 from django.db import models
 from django.utils import timezone
 
-
 class Project(models.Model):
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100, unique=True)
     space = models.ForeignKey("spaces.Space", on_delete=models.CASCADE)
     # lead = models.OneToOneField("fehler_auth.User", on_delete=models.CASCADE)
     members = models.ManyToManyField(
@@ -38,18 +37,21 @@ class Task(models.Model):
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
     type = models.CharField(max_length=120)
     description = models.TextField()
-    assignee = models.OneToOneField(
+    assignee = models.ForeignKey(
         "fehler_auth.User",
         null=True,
         on_delete=models.SET_NULL,
         related_name="task_assignee",
+        unique=False
     )
     labels = models.CharField(max_length=120)
-    reporter = models.OneToOneField(
+    reporter = models.ForeignKey(
         "fehler_auth.User",
         null=True,
         on_delete=models.SET_NULL,
         related_name="task_reporter",
+        unique=False
+
     )
     status = models.CharField(max_length=120)
     date_created = models.DateTimeField(default=timezone.now)
