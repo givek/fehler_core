@@ -42,6 +42,7 @@ class Task(models.Model):
         null=True,
         on_delete=models.SET_NULL,
         related_name="task_assignee",
+        unique=False
     )
     labels = models.CharField(max_length=120)
     reporter = models.OneToOneField(
@@ -49,6 +50,8 @@ class Task(models.Model):
         null=True,
         on_delete=models.SET_NULL,
         related_name="task_reporter",
+        unique=False
+
     )
     status = models.CharField(max_length=120)
     date_created = models.DateTimeField(default=timezone.now)

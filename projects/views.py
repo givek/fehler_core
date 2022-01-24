@@ -5,9 +5,8 @@ from rest_framework.permissions import AllowAny
 
 from fehler_auth.models import User
 
-from .serializers import ProjectSerializer
-from .models import ProjectMembership
-from .models import Project
+from .serializers import ProjectSerializer, TaskSerializer
+from .models import Project, ProjectMembership, Task
 
 
 class ListProjects(APIView):
@@ -60,3 +59,59 @@ class CreateProject(APIView):
             user=user, project=project
         )
         user.save()
+
+class ListTasks(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request, format=None):
+        """
+        Return a list of all tasks associated with a particular project.
+        """
+        tasks = Task.objects.all()
+        serializer = TaskSerializer(tasks, many=True)
+        project_tasks = [
+                    {
+                        "id": task.id,
+                        "name": task.name,
+                        "project": task.project.name,
+                        "type": task.type,
+                        "description": task.description,
+                        "assignee": task.assignee.email if task.assignee else None,
+                        "labels": task.labels,
+                        "reporter": task.reporter.email if task.reporter else None,
+                        "status": task.status,
+                    }
+                    for task in tasks
+                ]
+        return Response(project_tasks, status=status.HTTP_200_OK)
+
+class CreateTask(APIView):
+
+    def post(self, request):
+        """
+        Create a new task with provided credentials.
+        """
+        task_serializer = TaskSerializer(data=request.data)
+        if task_serializer.is_valid(raise_exception=True):
+            new_task = task_serializer.save()
+            # task_serializer.save()
+
+            if new_task:
+                tasks = Task.objects.all()
+
+                project_tasks = [
+                    {
+                        "id": task.id,
+                        "name": task.name,
+                        "project": task.project.name,
+                        "type": task.type,
+                        "description": task.description,
+                        "assignee": task.assignee.email if task.assignee else None,
+                        "labels": task.labels,
+                        "reporter": task.reporter.email if task.reporter else None,
+                        "status": task.status,
+                    }
+                    for task in tasks
+                ]
+            return Response(project_tasks, status=status.HTTP_200_OK)
+        return Response(task_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
