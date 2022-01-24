@@ -18,14 +18,15 @@ class ListProjects(APIView):
         """
         project_memberships = ProjectMembership.objects.filter(user=user_id)
         user_projects = [
-                    {
-                        "id": project_membership.project_id,
-                        "name": project_membership.project.name,
-                        "space": project_membership.project.space.name,
-                    }
-                    for project_membership in project_memberships
-                ]
+            {
+                "id": project_membership.project_id,
+                "name": project_membership.project.name,
+                "space": project_membership.project.space.name,
+            }
+            for project_membership in project_memberships
+        ]
         return Response(user_projects, status=status.HTTP_200_OK)
+
 
 class CreateProject(APIView):
     permission_classes = [AllowAny]
@@ -55,10 +56,9 @@ class CreateProject(APIView):
 
     def create_project_membership(self, user, project_id):
         project = Project.objects.get(id=project_id)
-        user = ProjectMembership.objects.create(
-            user=user, project=project
-        )
+        user = ProjectMembership.objects.create(user=user, project=project)
         user.save()
+
 
 class ListTasks(APIView):
     permission_classes = [AllowAny]
@@ -70,23 +70,23 @@ class ListTasks(APIView):
         tasks = Task.objects.all()
         serializer = TaskSerializer(tasks, many=True)
         project_tasks = [
-                    {
-                        "id": task.id,
-                        "name": task.name,
-                        "project": task.project.name,
-                        "type": task.type,
-                        "description": task.description,
-                        "assignee": task.assignee.email if task.assignee else None,
-                        "labels": task.labels,
-                        "reporter": task.reporter.email if task.reporter else None,
-                        "status": task.status,
-                    }
-                    for task in tasks
-                ]
+            {
+                "id": task.id,
+                "name": task.name,
+                "project": task.project.name,
+                "type": task.type,
+                "description": task.description,
+                "assignee": task.assignee.email if task.assignee else None,
+                "labels": task.labels,
+                "reporter": task.reporter.email if task.reporter else None,
+                "status": task.status,
+            }
+            for task in tasks
+        ]
         return Response(project_tasks, status=status.HTTP_200_OK)
 
-class CreateTask(APIView):
 
+class CreateTask(APIView):
     def post(self, request):
         """
         Create a new task with provided credentials.
