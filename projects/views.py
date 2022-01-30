@@ -152,3 +152,16 @@ class DeleteTask(APIView):
         task = Task.objects.get(id=task_id)
         task.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class UpdateTask(APIView):
+    def put(self, request, task_id, format=None):
+        """
+        Update a task with provided credentials.
+        """
+        task = Task.objects.get(id=task_id)
+        task_serializer = TaskSerializer(task, data=request.data)
+        if task_serializer.is_valid(raise_exception=True):
+            task_serializer.save()
+            return Response(task_serializer.data, status=status.HTTP_200_OK)
+        return Response(task_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
