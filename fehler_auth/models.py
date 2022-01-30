@@ -89,7 +89,7 @@ class Invite(models.Model):
                 "token": token_generator.make_token(user),
             },
         )
-        activation_url = "http//" + domain + link
+        activation_url = "http://" + domain + link
 
         return activation_url
 
