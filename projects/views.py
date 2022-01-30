@@ -60,6 +60,18 @@ class CreateProject(APIView):
         user.save()
 
 
+class DeleteProject(APIView):
+    permission_classes = [AllowAny]
+
+    def delete(self, request, project_id):
+        """
+        Delete a project with provided credentials.
+        """
+        project = Project.objects.get(id=project_id)
+        project.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
 class ListTasks(APIView):
     permission_classes = [AllowAny]
 
