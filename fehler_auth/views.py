@@ -143,7 +143,7 @@ class VerificationView(View):
             user.set_password(password)
             user.save()
 
-            return redirect("invite")
+            return redirect("http://localhost:3000/login")
 
         return render(request, self.template_name, {"form": form})
 
