@@ -142,3 +142,13 @@ class CreateTask(APIView):
                 ]
             return Response(project_tasks, status=status.HTTP_200_OK)
         return Response(task_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class DeleteTask(APIView):
+    def delete(self, request, task_id):
+        """
+        Delete a task with provided credentials.
+        """
+        task = Task.objects.get(id=task_id)
+        task.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
