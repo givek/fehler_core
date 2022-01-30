@@ -1,6 +1,13 @@
 from django.urls import path
 
-from .views import CreateProject, ListProjects, DeleteProject, ListTasks, CreateTask
+from .views import (
+    CreateProject,
+    ListProjects,
+    DeleteProject,
+    ListTasks,
+    UpdateProject,
+    CreateTask,
+)
 
 urlpatterns = [
     path("projects/<int:user_id>", ListProjects.as_view(), name="list_projects"),
@@ -9,6 +16,11 @@ urlpatterns = [
         "delete_project/<int:project_id>",
         DeleteProject.as_view(),
         name="delete_project",
+    ),
+    path(
+        "update_project/<int:project_id>",
+        UpdateProject.as_view(),
+        name="update_project",
     ),
     path("tasks", ListTasks.as_view(), name="list_tasks"),
     path("create_task", CreateTask.as_view(), name="create_task"),

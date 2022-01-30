@@ -72,6 +72,21 @@ class DeleteProject(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
+class UpdateProject(APIView):
+    permission_classes = [AllowAny]
+
+    def put(self, request, project_id, format=None):
+        """
+        Update a project with provided credentials.
+        """
+        project = Project.objects.get(id=project_id)
+        project_serializer = ProjectSerializer(project, data=request.data)
+        if project_serializer.is_valid(raise_exception=True):
+            project_serializer.save()
+            return Response(project_serializer.data, status=status.HTTP_200_OK)
+        return Response(project_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
 class ListTasks(APIView):
     permission_classes = [AllowAny]
 
