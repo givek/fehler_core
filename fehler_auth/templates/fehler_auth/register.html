@@ -1,0 +1,44 @@
+{% extends "fehler_auth/base.html" %}
+{% load static %}
+
+
+{% block static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'fehler_auth/style.css' %}">
+{% endblock static %}
+    
+
+{% block content %}
+    <div class="main">
+        <h1 class="logo"><a class="logo" href="#">Fehler</a></h1>
+        <div class="container">
+            <form method="POST" enctype="multipart/form-data" class="form signup__form">
+                {% csrf_token %}  
+                <legend class="label signup__label">Create your Fehler Account</legend>
+                <label class="form__label" for="email">
+                    Email
+                    {{ form.email }}
+                </label>
+                <label class="form__label" for="password">
+                    Password
+                    {{ form.password }}
+                </label>
+                <div class="flex-container">
+                    <label class="form__label" for="first_name">
+                        First name
+                        {{ form.first_name }}
+                    </label>
+                    <label class="form__label lastname" for="last_name">
+                        Last name
+                        {{ form.last_name }}
+                    </label>
+                </div>
+                <div class="form-group">
+                    <button class="btn signup__btn" type="submit">Sign Up</button>
+                </div>
+                <p class="signin__question question">
+                    Already have an account? <a class="signin__link link" href="#">Sign in</a>
+                </p>
+            </form>
+        </div>
+    </div>
+{% endblock content %}
