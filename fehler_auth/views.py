@@ -151,7 +151,7 @@ class VerificationView(View):
         space = Space.objects.get(id=space_id)
         # invite = Invite.objects.get(email=user.email)
         member = SpaceMembership.objects.create(
-            user=user, space=space, invite=invite, type_of_member=invite.member_type
+            member=user, space=space, invite=invite, type_of_member=invite.member_type
         )
         member.save()
 
