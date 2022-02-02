@@ -13,19 +13,19 @@ from .views import (
 
 urlpatterns = [
     path("projects/", ListProjects.as_view(), name="list_projects"),
-    path("create-project", CreateProject.as_view(), name="create_project"),
+    path("create-project/", CreateProject.as_view(), name="create_project"),
     path(
-        "delete_project/<int:project_id>",
+        "delete_project/<int:project_id>/",
         DeleteProject.as_view(),
         name="delete_project",
     ),
     path(
-        "update_project/<int:project_id>",
+        "update_project/<int:project_id>/",
         UpdateProject.as_view(),
         name="update_project",
     ),
-    path("tasks", ListTasks.as_view(), name="list_tasks"),
-    path("create_task", CreateTask.as_view(), name="create_task"),
-    path("delete_task/<int:task_id>", DeleteTask.as_view(), name="delete_task"),
-    path("update_task/<int:task_id>", UpdateTask.as_view(), name="update_task"),
+    path("tasks/", ListTasks.as_view(), name="list_tasks"),
+    path("create_task/", CreateTask.as_view(), name="create_task"),
+    path("delete_task/<int:task_id>/", DeleteTask.as_view(), name="delete_task"),
+    path("update_task/<int:task_id>/", UpdateTask.as_view(), name="update_task"),
 ]
