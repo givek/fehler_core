@@ -1,12 +1,11 @@
 from rest_framework import serializers
 from rest_framework.validators import ValidationError
 from rest_framework import exceptions
+from django.utils.translation import ugettext_lazy as _
 
 from django.contrib.auth import authenticate
 
 from .models import User, Invite
-
-from spaces.models import Space
 
 
 class AuthTokenSerializer(serializers.Serializer):
@@ -54,6 +53,12 @@ class RegisterUserSerializer(serializers.ModelSerializer):
             instance.set_password(password)
         instance.save()
         return instance
+
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ("id", "email", "first_name", "last_name")
 
 
 class InviteSerializer(serializers.ModelSerializer):

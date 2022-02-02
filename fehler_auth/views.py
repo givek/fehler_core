@@ -12,7 +12,12 @@ from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 
-from .serializers import RegisterUserSerializer, InviteSerializer, AuthTokenSerializer
+from .serializers import (
+    RegisterUserSerializer,
+    InviteSerializer,
+    UserSerializer,
+    AuthTokenSerializer,
+)
 from .models import User, Invite
 from .forms import UserInviteForm, UserInviteRegisterForm
 from .utils import token_generator
@@ -21,25 +26,14 @@ from spaces.models import Space, SpaceMembership
 
 
 class UserDetails(APIView):
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
 
-    def post(self, request):
+    def get(self, request):
         """
         Return details of current authenticated user.
         """
-        token = request.data["token"]
-        user = Token.objects.get(key=token).user
-        if user:
-            user_data = {
-                "user": {
-                    "id": user.id,
-                    "email": user.email,
-                    "first_name": user.first_name,
-                    "last_name": user.last_name,
-                }
-            }
-            return Response(user_data, status=status.HTTP_200_OK)
-        return Response(status=status.HTTP_400_BAD_REQUEST)
+        user_serializer = UserSerializer(request.user)
+        return Response(user_serializer.data, status=status.HTTP_200_OK)
 
 
 class RegisterUser(APIView):
