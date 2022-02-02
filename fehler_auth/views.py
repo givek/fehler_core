@@ -1,7 +1,3 @@
-import datetime
-
-from pytz import utc
-
 from django.views import View
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponseNotFound
@@ -59,20 +55,13 @@ class RegisterUser(APIView):
         return Response(reg_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class ObtainExpiringAuthToken(ObtainAuthToken):
+class CustomObtainAuthToken(ObtainAuthToken):
     def post(self, request, **kwargs):
-        print(request.data)
         serializer = AuthTokenSerializer(data=request.data)
 
         if serializer.is_valid(raise_exception=True):
-            token, created = Token.objects.get_or_create(
-                user=serializer.validated_data["user"]
-            )
-            if not created:
-                # update the created time of the token to keep it valid
-                token.created = datetime.datetime.utcnow().replace(tzinfo=utc)
-                token.save()
-
+            user = serializer.validated_data["user"]
+            token, _ = Token.objects.get_or_create(user=user)
             return Response({"token": token.key}, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

@@ -133,9 +133,8 @@ REST_FRAMEWORK = {
         "rest_framework.permissions.AllowAny",
     ],
     "DEFAULT_AUTHENTICATION_CLASSES": (
-        "fehler_auth.authentication.ExpiringTokenAuthentication",
+        "rest_framework.authentication.TokenAuthentication",
     ),
-    "EXCEPTION_HANDLER": "fehler_auth.utils.custom_exception_handler",
 }
 
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
