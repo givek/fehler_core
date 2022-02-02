@@ -59,3 +59,15 @@ class CreateSpace(APIView):
             member=user, space=space, type_of_member="Owner"
         )
         member.save()
+
+
+class DeleteSpace(APIView):
+    permission_classes = [AllowAny]
+
+    def delete(self, request, space_id):
+        """
+        Delete a space with provided credentials.
+        """
+        space = Space.objects.get(id=space_id)
+        space.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
