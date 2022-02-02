@@ -1,7 +1,7 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 
 from fehler_auth.models import User
 
@@ -10,13 +10,13 @@ from .models import Project, ProjectMembership, Task
 
 
 class ListProjects(APIView):
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
 
-    def get(self, request, user_id):
+    def get(self, request):
         """
         Return a list of all projects a particular user is associated with.
         """
-        project_memberships = ProjectMembership.objects.filter(user=user_id)
+        project_memberships = ProjectMembership.objects.filter(user=request.user.id)
         user_projects = [
             {
                 "id": project_membership.project_id,
