@@ -41,12 +41,14 @@ class RegisterUser(APIView):
 
     def post(self, request):
         print(request.data)
-        reg_serializer = RegisterUserSerializer(data=request.data)
-        if reg_serializer.is_valid(raise_exception=True):
-            new_user = reg_serializer.save()
+        register_user_serializer = RegisterUserSerializer(data=request.data)
+        if register_user_serializer.is_valid(raise_exception=True):
+            new_user = register_user_serializer.save()
             if new_user:
                 return Response(status=status.HTTP_201_CREATED)
-        return Response(reg_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(
+            register_user_serializer.errors, status=status.HTTP_400_BAD_REQUEST
+        )
 
 
 class CustomObtainAuthToken(ObtainAuthToken):
