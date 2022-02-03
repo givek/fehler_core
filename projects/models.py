@@ -6,6 +6,7 @@ class Project(models.Model):
     name = models.CharField(max_length=100, unique=True)
     space = models.ForeignKey("spaces.Space", on_delete=models.CASCADE)
     # lead = models.OneToOneField("fehler_auth.User", on_delete=models.CASCADE)
+    description = models.TextField(blank=True, null=True)
     members = models.ManyToManyField(
         "fehler_auth.User",
         through="ProjectMembership",
