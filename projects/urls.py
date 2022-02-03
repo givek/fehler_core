@@ -12,7 +12,7 @@ from .views import (
 )
 
 urlpatterns = [
-    path("projects/", ListProjects.as_view(), name="list_projects"),
+    path("<str:space_name>/projects/", ListProjects.as_view(), name="list_projects"),
     path("create-project/", CreateProject.as_view(), name="create_project"),
     path(
         "delete_project/<int:project_id>/",

@@ -12,11 +12,12 @@ from .models import Project, ProjectMembership, Task
 class ListProjects(APIView):
     permission_classes = [IsAuthenticated]
 
-    def get(self, request):
+    def get(self, request, space_name):
         """
         Return a list of all projects a particular user is associated with.
         """
         project_memberships = ProjectMembership.objects.filter(user=request.user.id)
+        # only return projects from that particular space.
         user_projects = [
             {
                 "id": project_membership.project_id,
@@ -24,12 +25,13 @@ class ListProjects(APIView):
                 "space": project_membership.project.space.name,
             }
             for project_membership in project_memberships
+            if project_membership.project.space.name == space_name
         ]
         return Response(user_projects, status=status.HTTP_200_OK)
 
 
 class CreateProject(APIView):
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
 
     def post(self, request):
         """
@@ -61,7 +63,7 @@ class CreateProject(APIView):
 
 
 class DeleteProject(APIView):
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
 
     def delete(self, request, project_id):
         """
@@ -73,9 +75,9 @@ class DeleteProject(APIView):
 
 
 class UpdateProject(APIView):
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
 
-    def put(self, request, project_id, format=None):
+    def put(self, request, project_id):
         """
         Update a project with provided credentials.
         """
@@ -88,9 +90,9 @@ class UpdateProject(APIView):
 
 
 class ListTasks(APIView):
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
 
-    def get(self, request, format=None):
+    def get(self, request):
         """
         Return a list of all tasks associated with a particular project.
         """
