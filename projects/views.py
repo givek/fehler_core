@@ -2,11 +2,13 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import AllowAny, IsAuthenticated
+from django.utils import timezone
 
 from fehler_auth.models import User
 
 from .serializers import ProjectSerializer, TaskSerializer
 from .models import Project, ProjectMembership, Task
+from spaces.models import Space
 
 
 class ListProjects(APIView):
@@ -28,6 +30,26 @@ class ListProjects(APIView):
             if project_membership.project.space.name == space_name
         ]
         return Response(user_projects, status=status.HTTP_200_OK)
+
+
+class AddProjectMember(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, space_name, project_name):
+        """
+        Add a user to a project.
+        """
+        space = Space.objects.get(name=space_name)
+        user = User.objects.get(email=request.data["email"])
+        if user in space.get_members():
+            project = Project.objects.get(name=project_name, space__name=space_name)
+
+            project_membership = ProjectMembership(
+                project=project, user=user, date_joined=timezone.now()
+            )
+            project_membership.save()
+            return Response(status=status.HTTP_200_OK)
+        return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
 class CreateProject(APIView):
