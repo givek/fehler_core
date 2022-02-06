@@ -189,3 +189,21 @@ class UpdateTask(APIView):
             task_serializer.save()
             return Response(task_serializer.data, status=status.HTTP_200_OK)
         return Response(task_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class AssignTask(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, task_id, space_name, project_name):
+        """
+        Assign a task to a user.
+        """
+        space = Space.objects.get(name=space_name)
+        project = Project.objects.get(name=project_name, space__name=space_name)
+        task = Task.objects.get(id=task_id)
+        user = User.objects.get(email=request.data["email"])
+        if user in task.project.get_members():
+            task.assignee = user
+            task.save()
+            return Response(status=status.HTTP_200_OK)
+        return Response(status=status.HTTP_400_BAD_REQUEST)

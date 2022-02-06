@@ -10,6 +10,7 @@ from .views import (
     DeleteTask,
     UpdateTask,
     AddProjectMember,
+    AssignTask,
 )
 
 urlpatterns = [
@@ -33,5 +34,10 @@ urlpatterns = [
         "add_project_member/<str:space_name>/<str:project_name>/",
         AddProjectMember.as_view(),
         name="add_project_member",
+    ),
+    path(
+        "assign_task/<str:space_name>/<str:project_name>/<int:task_id>/",
+        AssignTask.as_view(),
+        name="assign_task",
     ),
 ]
