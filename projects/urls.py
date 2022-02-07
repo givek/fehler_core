@@ -11,6 +11,7 @@ from .views import (
     UpdateTask,
     AddProjectMember,
     AssignTask,
+    CreateBoard,
 )
 
 urlpatterns = [
@@ -40,4 +41,5 @@ urlpatterns = [
         AssignTask.as_view(),
         name="assign_task",
     ),
+    path("create_board/", CreateBoard.as_view(), name="create_board"),
 ]

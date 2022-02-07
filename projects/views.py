@@ -6,9 +6,31 @@ from django.utils import timezone
 
 from fehler_auth.models import User
 
-from .serializers import ProjectSerializer, TaskSerializer
-from .models import Project, ProjectMembership, Task
+from .serializers import (
+    ProjectSerializer,
+    TaskSerializer,
+    BoardSerializer,
+    ColumnSerializer,
+    LabelSerializer,
+)
+from .models import Project, ProjectMembership, Task, Board, Column, Label
 from spaces.models import Space
+
+
+# Kanban Board
+class CreateBoard(APIView):
+    def post(self, request):
+        """
+        Create a new board with provided credentials.
+        """
+        board_serializer = BoardSerializer(data=request.data)
+        if board_serializer.is_valid(raise_exception=True):
+            new_board = board_serializer.save()
+            if new_board:
+                boards = Board.objects.all()
+                board_serializer = BoardSerializer(boards, many=True)
+                return Response(board_serializer.data, status=status.HTTP_200_OK)
+        return Response(board_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class ListProjects(APIView):
