@@ -7,22 +7,27 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('projects', '0006_auto_20220207_1330'),
+        ("projects", "0006_auto_20220207_1330"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='board',
-            name='members',
+            model_name="board",
+            name="members",
         ),
         migrations.RemoveField(
-            model_name='board',
-            name='owner',
+            model_name="board",
+            name="owner",
         ),
         migrations.AddField(
-            model_name='board',
-            name='project',
-            field=models.ForeignKey(default=1, on_delete=django.db.models.deletion.CASCADE, related_name='board_project', to='projects.Project'),
+            model_name="board",
+            name="project",
+            field=models.ForeignKey(
+                default=1,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="board_project",
+                to="projects.Project",
+            ),
             preserve_default=False,
         ),
     ]

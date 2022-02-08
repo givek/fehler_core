@@ -8,13 +8,19 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('projects', '0005_board_column_label'),
+        ("projects", "0005_board_column_label"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='board',
-            name='owner',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.PROTECT, related_name='board_owner', to=settings.AUTH_USER_MODEL),
+            model_name="board",
+            name="owner",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.PROTECT,
+                related_name="board_owner",
+                to=settings.AUTH_USER_MODEL,
+            ),
         ),
     ]

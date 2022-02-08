@@ -9,42 +9,102 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('projects', '0004_merge_20220205_0857'),
+        ("projects", "0004_merge_20220205_0857"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Board',
+            name="Board",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=120)),
-                ('members', models.ManyToManyField(related_name='board_members', to=settings.AUTH_USER_MODEL)),
-                ('owner', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='board_owner', to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=120)),
+                (
+                    "members",
+                    models.ManyToManyField(
+                        related_name="board_members", to=settings.AUTH_USER_MODEL
+                    ),
+                ),
+                (
+                    "owner",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.PROTECT,
+                        related_name="board_owner",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
             options={
-                'ordering': ['id'],
+                "ordering": ["id"],
             },
         ),
         migrations.CreateModel(
-            name='Label',
+            name="Label",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=120)),
-                ('color', models.CharField(max_length=120)),
-                ('board', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='labels', to='projects.Board')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("name", models.CharField(max_length=120)),
+                ("color", models.CharField(max_length=120)),
+                (
+                    "board",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="labels",
+                        to="projects.Board",
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Column',
+            name="Column",
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('title', models.CharField(max_length=120)),
-                ('column_order', models.PositiveIntegerField(db_index=True, default=0, editable=False)),
-                ('board', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='columns', to='projects.Board')),
-                ('tasks', models.ManyToManyField(related_name='column_tasks', to='projects.Task')),
+                (
+                    "id",
+                    models.AutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("title", models.CharField(max_length=120)),
+                (
+                    "column_order",
+                    models.PositiveIntegerField(
+                        db_index=True, default=0, editable=False
+                    ),
+                ),
+                (
+                    "board",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="columns",
+                        to="projects.Board",
+                    ),
+                ),
+                (
+                    "tasks",
+                    models.ManyToManyField(
+                        related_name="column_tasks", to="projects.Task"
+                    ),
+                ),
             ],
             options={
-                'ordering': ['column_order'],
+                "ordering": ["column_order"],
             },
         ),
     ]

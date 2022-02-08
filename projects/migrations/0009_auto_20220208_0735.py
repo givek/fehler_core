@@ -6,44 +6,44 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('projects', '0008_auto_20220207_1714'),
+        ("projects", "0008_auto_20220207_1714"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='column',
-            name='board',
+            model_name="column",
+            name="board",
         ),
         migrations.RemoveField(
-            model_name='column',
-            name='tasks',
+            model_name="column",
+            name="tasks",
         ),
         migrations.RemoveField(
-            model_name='label',
-            name='board',
+            model_name="label",
+            name="board",
         ),
         migrations.RemoveField(
-            model_name='task',
-            name='assignee',
+            model_name="task",
+            name="assignee",
         ),
         migrations.RemoveField(
-            model_name='task',
-            name='project',
+            model_name="task",
+            name="project",
         ),
         migrations.RemoveField(
-            model_name='task',
-            name='reporter',
+            model_name="task",
+            name="reporter",
         ),
         migrations.DeleteModel(
-            name='Board',
+            name="Board",
         ),
         migrations.DeleteModel(
-            name='Column',
+            name="Column",
         ),
         migrations.DeleteModel(
-            name='Label',
+            name="Label",
         ),
         migrations.DeleteModel(
-            name='Task',
+            name="Task",
         ),
     ]

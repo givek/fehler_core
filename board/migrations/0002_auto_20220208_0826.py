@@ -7,18 +7,23 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('board', '0001_initial'),
+        ("board", "0001_initial"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='column',
-            name='tasks',
+            model_name="column",
+            name="tasks",
         ),
         migrations.AddField(
-            model_name='task',
-            name='column',
-            field=models.ForeignKey(default=1, on_delete=django.db.models.deletion.CASCADE, related_name='task_column', to='board.Column'),
+            model_name="task",
+            name="column",
+            field=models.ForeignKey(
+                default=1,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="task_column",
+                to="board.Column",
+            ),
             preserve_default=False,
         ),
     ]
