@@ -13,6 +13,7 @@ from .serializers import (
 )
 from .models import Task, Board, Column, Label
 from spaces.models import Space
+from projects.models import Project
 
 
 class CreateBoard(APIView):
