@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     "fehler_auth",
     "spaces",
     "projects",
+    "board",
 ]
 
 MIDDLEWARE = [
