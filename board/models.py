@@ -1,3 +1,5 @@
+from operator import mod
+from pyexpat import model
 from django.db import models
 from django.utils import timezone
 
@@ -22,7 +24,6 @@ class Board(models.Model):
 class Column(models.Model):
     title = models.CharField(max_length=120)
     board = models.ForeignKey("Board", on_delete=models.CASCADE, related_name="columns")
-    tasks = models.ManyToManyField("Task", related_name="column_tasks", blank=True)
     column_order = models.PositiveIntegerField(default=0, editable=False, db_index=True)
 
     class Meta:
@@ -51,6 +52,9 @@ class Task(models.Model):
         null=True,
         on_delete=models.SET_NULL,
         related_name="task_assignee",
+    )
+    column = models.ForeignKey(
+        "Column", related_name="task_column", on_delete=models.CASCADE
     )
     labels = models.CharField(max_length=120)
     reporter = models.ForeignKey(
