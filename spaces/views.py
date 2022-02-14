@@ -4,6 +4,8 @@ from rest_framework import status
 from rest_framework.permissions import AllowAny, IsAuthenticated
 
 from fehler_auth.models import User
+from django.shortcuts import get_object_or_404
+from rest_framework.validators import ValidationError
 
 from .serializers import SpaceSerializer
 from .models import SpaceMembership
@@ -33,12 +35,17 @@ class CreateSpace(APIView):
         Create a new space with provided credentials.
         """
         print(request.data)
+        try:
+            owner_email = request.data["owner"]
+        except:
+            raise ValidationError("Owner email is required")
+
+        owner = get_object_or_404(User, email=owner_email)
         space_serializer = SpaceSerializer(data=request.data)
         if space_serializer.is_valid(raise_exception=True):
             new_space = space_serializer.save()
             if new_space:
-                owner_email = request.data["owner"]
-                owner = User.objects.get(email=owner_email)
+
                 member = self.create_space_membership(owner, new_space.id)
                 space_memberships = SpaceMembership.objects.filter(member=owner)
                 user_spaces = [
