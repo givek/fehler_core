@@ -152,3 +152,68 @@ class Columns(APIView):
 #         serializer = ColumnSerializer(columns, many=True)
 
 #         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+from django.db.models import F
+
+
+class ReorderTasks(APIView):
+    def post(self, request):
+        # select tasks from a particular board.
+
+        tasks = Task.objects.filter(column__board=1)
+
+        source_column_id = request.data["source_droppable_id"]
+        destination_column_id = request.data["destination_droppable_id"]
+
+        # add one as our order starts from 1
+        source_index = request.data["source_index"] + 1
+        destination_index = request.data["destination_index"] + 1
+
+        task_id = request.data["task_id"]
+
+        task_to_update = Task.objects.filter(id=task_id)
+
+        if source_column_id != destination_column_id:
+
+            # task_order = Task.objects.filter(column=destination_column_id).count() + 1
+
+            Task.objects.filter(column=destination_column_id).filter(
+                task_order__gte=destination_index
+            ).update(task_order=F("task_order") + 1)
+
+            task_to_update.update(
+                column=destination_column_id, task_order=destination_index
+            )
+
+            Task.objects.filter(column=source_column_id).filter(
+                task_order__gte=source_index
+            ).update(task_order=F("task_order") - 1)
+
+        else:
+            print("else start")
+            tasks_to_update = tasks.filter(column=source_column_id)
+            if source_index < destination_index:
+                # filter tasks from specific column
+                print("source < destination")
+                tasks_to_update = tasks_to_update.filter(task_order__gte=source_index)
+                tasks_to_update = tasks_to_update.filter(
+                    task_order__lte=destination_index
+                )
+                print(tasks_to_update)
+                tasks_to_update.update(task_order=F("task_order") - 1)
+            else:
+                tasks_to_update = tasks.filter(task_order__gte=destination_index)
+                tasks_to_update = tasks_to_update.filter(task_order__lte=source_index)
+                tasks_to_update.update(task_order=F("task_order") + 1)
+
+            task_to_update.update(task_order=destination_index)
+
+        columns = Column.objects.filter(board=1)
+
+        column_serializer = ColumnSerializer(columns, many=True)
+        tasks_serializer = TaskSerializer(tasks, many=True)
+
+        data = {"columns": column_serializer.data, "tasks": tasks_serializer.data}
+
+        return Response(data, status=status.HTTP_200_OK)
