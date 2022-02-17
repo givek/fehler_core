@@ -4,17 +4,18 @@ from .models import Task, Board, Column, Label
 
 
 class TaskSerializer(serializers.ModelSerializer):
+    reporter = serializers.CharField(source="reporter.get_full_name")
+
     class Meta:
         model = Task
         fields = [
+            "id",
             "name",
-            "project",
-            "type",
             "description",
             "assignee",
-            "labels",
             "reporter",
-            "status",
+            "date_due",
+            "column",
         ]
 
 
