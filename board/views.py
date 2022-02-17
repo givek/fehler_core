@@ -32,29 +32,20 @@ class CreateBoard(APIView):
 
 
 class ListTasks(APIView):
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
 
-    def get(self, request):
+    def get(self, request, space_name, project_name, board_id):
         """
         Return a list of all tasks associated with a particular project.
         """
-        tasks = Task.objects.all()
+
+        # TODO: search project inside a space.
+        # board = Board.objects.get(id=board_id)
+
+        tasks = Task.objects.filter(column__board=board_id)
         serializer = TaskSerializer(tasks, many=True)
-        project_tasks = [
-            {
-                "id": task.id,
-                "name": task.name,
-                "project": task.project.name,
-                "type": task.type,
-                "description": task.description,
-                "assignee": task.assignee.email if task.assignee else None,
-                "labels": task.labels,
-                "reporter": task.reporter.email if task.reporter else None,
-                "status": task.status,
-            }
-            for task in tasks
-        ]
-        return Response(project_tasks, status=status.HTTP_200_OK)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class CreateTask(APIView):
