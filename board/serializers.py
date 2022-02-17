@@ -21,10 +21,11 @@ class TaskSerializer(serializers.ModelSerializer):
 
 class BoardSerializer(serializers.ModelSerializer):
     owner = serializers.PrimaryKeyRelatedField(read_only=True)
+    columns = serializers.PrimaryKeyRelatedField(read_only=True, many=True)
 
     class Meta:
         model = Board
-        fields = ["name", "id", "owner"]
+        fields = ["id", "name", "columns"]
 
 
 class ColumnSerializer(serializers.ModelSerializer):
