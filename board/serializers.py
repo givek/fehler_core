@@ -29,12 +29,18 @@ class BoardSerializer(serializers.ModelSerializer):
 
 
 class ColumnSerializer(serializers.ModelSerializer):
-    board = serializers.PrimaryKeyRelatedField(queryset=Board.objects.all())
-    tasks = TaskSerializer(many=True, read_only=True)
+    # board = serializers.PrimaryKeyRelatedField(queryset=Board.objects.all())
+    tasks = serializers.PrimaryKeyRelatedField(read_only=True, many=True)
+    # tasks = TaskSerializer(many=True, read_only=True)
 
     class Meta:
         model = Column
-        fields = ["id", "board", "title", "column_order", "tasks"]
+        fields = ["id", "board", "title", "tasks"]
+
+    # def to_representation(self, instance):
+    #     row = super(ColumnSerializer, self).to_representation(instance)
+    #     row_id = row["id"]
+    #     return {f"column-{row_id}": row}
 
 
 class LabelSerializer(serializers.ModelSerializer):
@@ -43,3 +49,8 @@ class LabelSerializer(serializers.ModelSerializer):
     class Meta:
         model = Label
         fields = ["id", "name", "color", "board"]
+
+
+# class TasksReorderSerializer(serializers.Serializer):
+#     tasks = TaskSerializer()
+#     columns = ColumnSerializer()
