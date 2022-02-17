@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('board', '0011_auto_20220215_0620'),
+        ("board", "0011_auto_20220215_0620"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='task',
-            name='task_order',
+            model_name="task",
+            name="task_order",
             field=models.PositiveIntegerField(db_index=True, default=1),
         ),
     ]

@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('board', '0003_auto_20220209_1737'),
+        ("board", "0003_auto_20220209_1737"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='column',
-            name='column_order',
+            model_name="column",
+            name="column_order",
             field=models.PositiveIntegerField(db_index=True, editable=False),
         ),
     ]

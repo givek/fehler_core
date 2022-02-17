@@ -6,17 +6,17 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('board', '0009_auto_20220212_0348'),
+        ("board", "0009_auto_20220212_0348"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='task',
-            options={'ordering': ['task_order']},
+            name="task",
+            options={"ordering": ["task_order"]},
         ),
         migrations.AddField(
-            model_name='task',
-            name='task_order',
+            model_name="task",
+            name="task_order",
             field=models.PositiveIntegerField(default=1),
             preserve_default=False,
         ),

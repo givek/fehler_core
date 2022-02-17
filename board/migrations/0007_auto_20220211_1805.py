@@ -7,23 +7,35 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('board', '0006_task_date_due'),
+        ("board", "0006_task_date_due"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='board',
-            name='project',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='board_project', to='projects.Project'),
+            model_name="board",
+            name="project",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="board_project",
+                to="projects.Project",
+            ),
         ),
         migrations.AlterField(
-            model_name='column',
-            name='board',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='columns_board', to='board.Board'),
+            model_name="column",
+            name="board",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="columns_board",
+                to="board.Board",
+            ),
         ),
         migrations.AlterField(
-            model_name='task',
-            name='column',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='tasks_column', to='board.Column'),
+            model_name="task",
+            name="column",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="tasks_column",
+                to="board.Column",
+            ),
         ),
     ]
