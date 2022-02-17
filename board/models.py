@@ -1,3 +1,4 @@
+from enum import unique
 from django.db import models
 from django.utils import timezone
 
@@ -21,8 +22,10 @@ class Board(models.Model):
 
 class Column(models.Model):
     title = models.CharField(max_length=120)
-    board = models.ForeignKey("Board", on_delete=models.CASCADE, related_name="columns")
-    column_order = models.PositiveIntegerField(default=0, editable=False, db_index=True)
+    board = models.ForeignKey(
+        "Board", on_delete=models.CASCADE, related_name="column_board"
+    )
+    column_order = models.PositiveIntegerField()
 
     class Meta:
         ordering = ["column_order"]
@@ -40,6 +43,9 @@ class Label(models.Model):
         return self.name
 
 
+from django.db.models import Count, F, Value
+
+
 class Task(models.Model):
     name = models.CharField(max_length=120)
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
@@ -51,9 +57,7 @@ class Task(models.Model):
         on_delete=models.SET_NULL,
         related_name="task_assignee",
     )
-    column = models.ForeignKey(
-        "Column", related_name="task_column", on_delete=models.CASCADE
-    )
+    column = models.ForeignKey("Column", related_name="tasks", on_delete=models.CASCADE)
     labels = models.CharField(max_length=120)
     reporter = models.ForeignKey(
         "fehler_auth.User",
@@ -63,6 +67,28 @@ class Task(models.Model):
     )
     status = models.CharField(max_length=120)
     date_created = models.DateTimeField(default=timezone.now)
+    date_due = models.DateTimeField(blank=True, null=True)
+    task_order = models.PositiveIntegerField(default=1, db_index=True)
+
+    class Meta:
+        ordering = ["task_order"]
 
     def __str__(self):
         return self.name
+
+    def save(self, *args, **kwargs):
+        if self._state.adding is True:
+            task_order = self.cal_task_order(self.column)
+            self.task_order = task_order
+            super(Task, self).save(*args, **kwargs)
+
+    def cal_task_order(self, column):
+        present_keys = (
+            Task.objects.filter(column=column)
+            .order_by("-task_order")
+            .values_list("task_order", flat=True)
+        )
+        if present_keys:
+            return present_keys[0] + 1
+        else:
+            return 1
