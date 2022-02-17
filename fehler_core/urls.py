@@ -6,5 +6,5 @@ urlpatterns = [
     path("api/", include("fehler_auth.urls")),
     path("api/", include("spaces.urls")),
     path("api/", include("projects.urls")),
-    path("api/", include("board.urls")),
+    path("api/", include("boards.urls")),
 ]
