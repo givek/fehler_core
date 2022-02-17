@@ -118,3 +118,37 @@ class AssignTask(APIView):
             task.save()
             return Response(status=status.HTTP_200_OK)
         return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+class Columns(APIView):
+    # permission_classes = [IsAuthenticated]
+
+    def get(self, request, space_name, project_name):
+        """
+        Assign a task to a user.
+        """
+        space = Space.objects.get(name=space_name)
+        project = Project.objects.get(name=project_name, space__name=space_name)
+        board = Board.objects.get(project=project)
+        columns = Column.objects.filter(board=board)
+
+        serializer = ColumnSerializer(columns, many=True)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+# class Board(APIView):
+#     # permission_classes = [IsAuthenticated]
+
+#     def get(self, request, space_name, project_name):
+#         """
+#         Assign a task to a user.
+#         """
+#         space = Space.objects.get(name=space_name)
+#         project = Project.objects.get(name=project_name, space__name=space_name)
+#         board = Board.objects.get(project=project)
+#         columns = Column.objects.filter(board=board)
+
+#         serializer = ColumnSerializer(columns, many=True)
+
+#         return Response(serializer.data, status=status.HTTP_200_OK)
