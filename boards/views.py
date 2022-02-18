@@ -176,20 +176,30 @@ class ReorderTasks(APIView):
 
         if source_column_id != destination_column_id:
 
+            print("source_col_id", source_column_id)
+            print("dest_col_id", destination_column_id)
+
             # task_order = Task.objects.filter(column=destination_column_id).count() + 1
 
-            Task.objects.filter(column=destination_column_id).filter(
+            dest_tasks = Task.objects.filter(column=destination_column_id).filter(
                 task_order__gte=destination_index
-            ).update(task_order=F("task_order") + 1)
+            )
+
+            dest_tasks.update(task_order=F("task_order") + 1)
+
+            print(dest_tasks)
 
             task_to_update.update(
                 column=destination_column_id, task_order=destination_index
             )
 
-            Task.objects.filter(column=source_column_id).filter(
-                task_order__gte=source_index
-            ).update(task_order=F("task_order") - 1)
+            print("task", task_to_update)
 
+            source_tasks = Task.objects.filter(column=source_column_id).filter(
+                task_order__gte=source_index
+            )
+            source_tasks.update(task_order=F("task_order") - 1)
+            print(source_tasks)
         else:
             print("else start")
             tasks_to_update = tasks.filter(column=source_column_id)
@@ -203,11 +213,17 @@ class ReorderTasks(APIView):
                 print(tasks_to_update)
                 tasks_to_update.update(task_order=F("task_order") - 1)
             else:
-                tasks_to_update = tasks.filter(task_order__gte=destination_index)
+                print("source > dest")
+                print("dest_index", destination_index)
+                tasks_to_update = tasks_to_update.filter(
+                    task_order__gte=destination_index
+                )
                 tasks_to_update = tasks_to_update.filter(task_order__lte=source_index)
+                print(tasks_to_update)
                 tasks_to_update.update(task_order=F("task_order") + 1)
 
             task_to_update.update(task_order=destination_index)
+            print(task_to_update)
 
         columns = Column.objects.filter(board=1)
 
