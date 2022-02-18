@@ -74,7 +74,7 @@ class Task(models.Model):
         ordering = ["task_order"]
 
     def __str__(self):
-        return self.name
+        return f"{self.name} {self.task_order}"
 
     def save(self, *args, **kwargs):
         if self._state.adding is True:
