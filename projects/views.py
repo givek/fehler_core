@@ -54,6 +54,38 @@ class AddProjectMember(APIView):
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
+# class CreateProject(APIView):
+#     permission_classes = [IsAuthenticated]
+
+#     def post(self, request):
+#         """
+#         Create a new project with provided credentials.
+#         """
+#         project_serializer = ProjectSerializer(data=request.data)
+#         if project_serializer.is_valid(raise_exception=True):
+#             new_project = project_serializer.save()
+#             if new_project:
+#                 owner_email = request.data["owner"]
+#                 owner = User.objects.get(email=owner_email)
+#                 user = self.create_project_membership(owner, new_project.id)
+#                 project_memberships = ProjectMembership.objects.filter(user=owner)
+#                 user_projects = [
+#                     {
+#                         "id": project_membership.project_id,
+#                         "name": project_membership.project.name,
+#                         "space": project_membership.project.space.name,
+#                     }
+#                     for project_membership in project_memberships
+#                 ]
+#                 return Response(user_projects, status=status.HTTP_200_OK)
+#         return Response(project_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+#     def create_project_membership(self, user, project_id):
+#         project = Project.objects.get(id=project_id)
+#         user = ProjectMembership.objects.create(user=user, project=project)
+#         user.save()
+
+
 class CreateProject(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -61,14 +93,25 @@ class CreateProject(APIView):
         """
         Create a new project with provided credentials.
         """
+        # name, space, description, (request.user)
+        
+        # for now, use request.user
+        # TODO: lead
+        
+        print('data', request.data)
+        print('user', request.user)
+
+
+
         project_serializer = ProjectSerializer(data=request.data)
+
+
+
         if project_serializer.is_valid(raise_exception=True):
             new_project = project_serializer.save()
             if new_project:
-                owner_email = request.data["owner"]
-                owner = User.objects.get(email=owner_email)
-                user = self.create_project_membership(owner, new_project.id)
-                project_memberships = ProjectMembership.objects.filter(user=owner)
+                new_project_membership = self.create_project_membership(request.user, new_project.id)
+                project_memberships = ProjectMembership.objects.filter(user=request.user)
                 user_projects = [
                     {
                         "id": project_membership.project_id,
