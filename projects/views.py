@@ -11,6 +11,8 @@ from .serializers import (
 )
 from .models import Project, ProjectMembership
 from spaces.models import Space
+from boards.models import Task
+from boards.serializers import TaskSerializer
 
 
 class ListProjects(APIView):
@@ -94,24 +96,24 @@ class CreateProject(APIView):
         Create a new project with provided credentials.
         """
         # name, space, description, (request.user)
-        
+
         # for now, use request.user
         # TODO: lead
-        
-        print('data', request.data)
-        print('user', request.user)
 
-
+        print("data", request.data)
+        print("user", request.user)
 
         project_serializer = ProjectSerializer(data=request.data)
-
-
 
         if project_serializer.is_valid(raise_exception=True):
             new_project = project_serializer.save()
             if new_project:
-                new_project_membership = self.create_project_membership(request.user, new_project.id)
-                project_memberships = ProjectMembership.objects.filter(user=request.user)
+                new_project_membership = self.create_project_membership(
+                    request.user, new_project.id
+                )
+                project_memberships = ProjectMembership.objects.filter(
+                    user=request.user
+                )
                 user_projects = [
                     {
                         "id": project_membership.project_id,
@@ -154,3 +156,18 @@ class UpdateProject(APIView):
             project_serializer.save()
             return Response(project_serializer.data, status=status.HTTP_200_OK)
         return Response(project_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ProjectTasks(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, space_name, project_name):
+        """
+        Return a list of all tasks associated with a particular space of a particular user.
+        """
+
+        space = Space.objects.get(name=space_name)
+        project = Project.objects.filter(space=space).get(name=project_name)
+        tasks = Task.objects.filter(project=project).filter(assignee=request.user)
+        serializer = TaskSerializer(tasks, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
