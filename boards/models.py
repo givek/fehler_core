@@ -57,7 +57,9 @@ class Task(models.Model):
         on_delete=models.SET_NULL,
         related_name="task_assignee",
     )
-    column = models.ForeignKey("Column", related_name="tasks", on_delete=models.CASCADE)
+    column = models.ForeignKey(
+        "Column", default=1, related_name="tasks", on_delete=models.CASCADE
+    )
     labels = models.CharField(max_length=120)
     reporter = models.ForeignKey(
         "fehler_auth.User",
@@ -67,7 +69,7 @@ class Task(models.Model):
     )
     status = models.CharField(max_length=120)
     date_created = models.DateTimeField(default=timezone.now)
-    date_due = models.DateTimeField(blank=True, null=True)
+    date_due = models.DateField(blank=True, null=True)
     task_order = models.PositiveIntegerField(default=1, db_index=True)
 
     class Meta:
