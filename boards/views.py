@@ -49,33 +49,42 @@ class ListTasks(APIView):
 
 
 class CreateTask(APIView):
-    def post(self, request):
+    def post(self, request, space_name, project_name):
         """
         Create a new task with provided credentials.
         """
         task_serializer = TaskSerializer(data=request.data)
+
+        print(task_serializer)
+
+        project = Project.objects.get(id=request.data["project"])
+
         if task_serializer.is_valid(raise_exception=True):
-            new_task = task_serializer.save()
-            # task_serializer.save()
+            new_task = task_serializer.save(project=project)
+
+            print("newtaskasdf")
+            print("newtask", new_task)
 
             if new_task:
                 tasks = Task.objects.all()
 
-                project_tasks = [
-                    {
-                        "id": task.id,
-                        "name": task.name,
-                        "project": task.project.name,
-                        "type": task.type,
-                        "description": task.description,
-                        "assignee": task.assignee.email if task.assignee else None,
-                        "labels": task.labels,
-                        "reporter": task.reporter.email if task.reporter else None,
-                        "status": task.status,
-                    }
-                    for task in tasks
-                ]
-            return Response(project_tasks, status=status.HTTP_200_OK)
+                # project_tasks = [
+                #     {
+                #         "id": task.id,
+                #         "name": task.name,
+                #         "project": task.project.name,
+                #         "type": task.type,
+                #         "description": task.description,
+                #         "assignee": task.assignee.email if task.assignee else None,
+                #         "labels": task.labels,
+                #         "reporter": task.reporter.email if task.reporter else None,
+                #         "status": task.status,
+                #     }
+                #     for task in tasks
+                # ]
+
+                # project_tasks = TaskSerializer(tasks, many=True)
+            return Response(status=status.HTTP_200_OK)
         return Response(task_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
