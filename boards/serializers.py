@@ -4,10 +4,15 @@ from .models import Task, Board, Column, Label
 
 
 class TaskSerializer(serializers.ModelSerializer):
-    reporter = serializers.CharField(source="reporter.get_full_name")
-    date_created = serializers.DateTimeField(format="%B, %d %Y")
-    column_title = serializers.CharField(source="column.title")
-    assignee_name = serializers.CharField(source="assignee.get_full_name")
+    reporter_name = serializers.CharField(
+        source="reporter.get_full_name", required=False
+    )
+    date_created = serializers.DateTimeField(format="%B, %d %Y", required=False)
+    column_title = serializers.CharField(source="column.title", required=False)
+    assignee_name = serializers.CharField(
+        source="assignee.get_full_name", required=False
+    )
+    # date_due = serializers.DateTimeField(format="%B, %d %Y", required=False)
 
     class Meta:
         model = Task
@@ -18,6 +23,7 @@ class TaskSerializer(serializers.ModelSerializer):
             "assignee",
             "assignee_name",
             "reporter",
+            "reporter_name",
             "date_due",
             "column",
             "column_title",
