@@ -1,9 +1,11 @@
 from django.urls import path
 
+
 from .views import (
     CreateProject,
     ListProjects,
     DeleteProject,
+    ProjectInfo,
     ProjectTasks,
     UpdateProject,
     AddProjectMember,
@@ -11,7 +13,11 @@ from .views import (
 
 urlpatterns = [
     path("<str:space_name>/projects/", ListProjects.as_view(), name="list_projects"),
-    path("create-project/", CreateProject.as_view(), name="create_project"),
+    path(
+        "<str:space_name>/create-project/",
+        CreateProject.as_view(),
+        name="create_project",
+    ),
     path(
         "delete_project/<int:project_id>/",
         DeleteProject.as_view(),
@@ -25,6 +31,11 @@ urlpatterns = [
     path(
         "add_project_member/<str:space_name>/<str:project_name>/",
         AddProjectMember.as_view(),
+        name="add_project_member",
+    ),
+    path(
+        "<str:space_name>/<str:project_name>/info/",
+        ProjectInfo.as_view(),
         name="add_project_member",
     ),
     path(

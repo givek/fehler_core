@@ -15,6 +15,24 @@ from boards.models import Task
 from boards.serializers import TaskSerializer
 
 
+class ProjectInfo(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, space_name, project_name):
+        """
+        Return a list of all projects a particular user is associated with.
+        """
+
+        space = Space.objects.get(name=space_name)
+
+        project = Project.objects.filter(space=space).get(name=project_name)
+
+        return Response(
+            {"id": project.id, "name": project.name, "space": space.name},
+            status=status.HTTP_200_OK,
+        )
+
+
 class ListProjects(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -91,7 +109,7 @@ class AddProjectMember(APIView):
 class CreateProject(APIView):
     permission_classes = [IsAuthenticated]
 
-    def post(self, request):
+    def post(self, request, space_name):
         """
         Create a new project with provided credentials.
         """
@@ -103,7 +121,11 @@ class CreateProject(APIView):
         print("data", request.data)
         print("user", request.user)
 
-        project_serializer = ProjectSerializer(data=request.data)
+        space = Space.objects.get(name=space_name)
+
+        project_serializer = ProjectSerializer(
+            data={"name": request.data["name"], "space": space.id}
+        )
 
         if project_serializer.is_valid(raise_exception=True):
             new_project = project_serializer.save()
@@ -121,6 +143,7 @@ class CreateProject(APIView):
                         "space": project_membership.project.space.name,
                     }
                     for project_membership in project_memberships
+                    if project_membership.project.space.name == space_name
                 ]
                 return Response(user_projects, status=status.HTTP_200_OK)
         return Response(project_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
