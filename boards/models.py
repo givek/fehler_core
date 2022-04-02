@@ -57,9 +57,7 @@ class Task(models.Model):
         on_delete=models.SET_NULL,
         related_name="task_assignee",
     )
-    column = models.ForeignKey(
-        "Column", default=1, related_name="tasks", on_delete=models.CASCADE
-    )
+    column = models.ForeignKey("Column", related_name="tasks", on_delete=models.CASCADE)
     labels = models.CharField(max_length=120)
     reporter = models.ForeignKey(
         "fehler_auth.User",
