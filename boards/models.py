@@ -82,7 +82,7 @@ class Task(models.Model):
         if self._state.adding is True:
             task_order = self.cal_task_order(self.column)
             self.task_order = task_order
-            super(Task, self).save(*args, **kwargs)
+        super(Task, self).save(*args, **kwargs)
 
     def cal_task_order(self, column):
         present_keys = (
