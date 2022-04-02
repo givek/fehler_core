@@ -32,7 +32,7 @@ class TaskSerializer(serializers.ModelSerializer):
 
 
 class BoardSerializer(serializers.ModelSerializer):
-    owner = serializers.PrimaryKeyRelatedField(read_only=True)
+    # owner = serializers.PrimaryKeyRelatedField(read_only=True)
     columns = serializers.PrimaryKeyRelatedField(read_only=True, many=True)
 
     class Meta:
