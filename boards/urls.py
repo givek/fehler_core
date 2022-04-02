@@ -25,7 +25,7 @@ urlpatterns = [
         AssignTask.as_view(),
         name="assign_task",
     ),
-    path("create_board/", CreateBoard.as_view(), name="create_board"),
+    path("create-board/", CreateBoard.as_view(), name="create_board"),
     path(
         "<str:space_name>/<str:project_name>/columns/",
         Columns.as_view(),
