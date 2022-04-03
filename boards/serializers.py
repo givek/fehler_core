@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Task, Board, Column, Label
+from .models import Task, Board, Column, Label, Tag
 
 
 class TaskSerializer(serializers.ModelSerializer):
@@ -8,10 +8,15 @@ class TaskSerializer(serializers.ModelSerializer):
         source="reporter.get_full_name", required=False
     )
     date_created = serializers.DateTimeField(format="%B, %d %Y", required=False)
+    date_due = serializers.DateField(format="%B, %d %Y")
     column_title = serializers.CharField(source="column.title", required=False)
     assignee_name = serializers.CharField(
         source="assignee.get_full_name", required=False
     )
+    tags = serializers.SlugRelatedField(
+        many=True, slug_field="name", queryset=Tag.objects.all()
+    )
+
     # date_due = serializers.DateTimeField(format="%B, %d %Y", required=False)
 
     class Meta:
@@ -26,10 +31,18 @@ class TaskSerializer(serializers.ModelSerializer):
             "reporter_name",
             "date_due",
             "priority",
+            "tags",
             "column",
             "column_title",
             "date_created",
         ]
+
+    def to_internal_value(self, data):
+        # convert each element in tags list to lowercase
+        data["tags"] = list(map(str.lower, data.get("tags", [])))
+        for tag_name in data.get("tags", []):
+            Tag.objects.get_or_create(name=tag_name)
+        return super().to_internal_value(data)
 
 
 class BoardSerializer(serializers.ModelSerializer):

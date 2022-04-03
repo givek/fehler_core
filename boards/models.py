@@ -45,6 +45,14 @@ class Label(models.Model):
 from django.db.models import Count, F, Value
 
 
+class Tag(models.Model):
+    name = models.CharField(max_length=24)
+    date_created = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return self.name
+
+
 class Task(models.Model):
     URGENT = 4
     HIGH = 3
@@ -78,7 +86,7 @@ class Task(models.Model):
     )
     status = models.CharField(max_length=120)
     priority = models.IntegerField(default=LOW, choices=TASK_PRIORITY_CHOICES)
- #   tags = models.ManyToManyField(Tag, related_name="tasks")
+    tags = models.ManyToManyField(Tag, related_name="tasks")
     date_created = models.DateTimeField(default=timezone.now)
     date_due = models.DateField(blank=True, null=True)
     task_order = models.PositiveIntegerField(default=1, db_index=True)
