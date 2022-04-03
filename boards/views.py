@@ -59,8 +59,14 @@ class CreateTask(APIView):
 
         project = Project.objects.get(id=request.data["project"])
 
+        board = Board.objects.filter(project=project).first()
+
+        first_column = Column.objects.filter(board=board).first()
+
+        request.data["column"] = first_column.id
+
         if task_serializer.is_valid(raise_exception=True):
-            new_task = task_serializer.save(project=project)
+            new_task = task_serializer.save(project=project, column=first_column)
 
             print("newtaskasdf")
             print("newtask", new_task)
