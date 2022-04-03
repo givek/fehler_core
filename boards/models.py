@@ -1,4 +1,3 @@
-from enum import unique
 from django.db import models
 from django.utils import timezone
 
@@ -47,6 +46,18 @@ from django.db.models import Count, F, Value
 
 
 class Task(models.Model):
+    URGENT = 4
+    HIGH = 3
+    MEDIUM = 2
+    LOW = 1
+
+    TASK_PRIORITY_CHOICES = (
+        (URGENT, "Urgent"),
+        (HIGH, "High"),
+        (MEDIUM, "Medium"),
+        (LOW, "Low"),
+    )
+
     name = models.CharField(max_length=120)
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
     type = models.CharField(max_length=120)
@@ -66,6 +77,8 @@ class Task(models.Model):
         related_name="task_reporter",
     )
     status = models.CharField(max_length=120)
+    priority = models.IntegerField(default=LOW, choices=TASK_PRIORITY_CHOICES)
+ #   tags = models.ManyToManyField(Tag, related_name="tasks")
     date_created = models.DateTimeField(default=timezone.now)
     date_due = models.DateField(blank=True, null=True)
     task_order = models.PositiveIntegerField(default=1, db_index=True)

@@ -25,6 +25,7 @@ class TaskSerializer(serializers.ModelSerializer):
             "reporter",
             "reporter_name",
             "date_due",
+            "priority",
             "column",
             "column_title",
             "date_created",
