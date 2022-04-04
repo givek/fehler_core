@@ -7,8 +7,8 @@ class TaskSerializer(serializers.ModelSerializer):
     reporter_name = serializers.CharField(
         source="reporter.get_full_name", required=False
     )
-    date_created = serializers.DateTimeField(format="%B, %d %Y", required=False)
-    date_due = serializers.DateField(format="%B, %d %Y")
+    # date_created = serializers.DateTimeField(format="%B, %d %Y", required=False)
+    # date_due = serializers.DateField(format="%B, %d %Y")
     column_title = serializers.CharField(source="column.title", required=False)
     assignee_name = serializers.CharField(
         source="assignee.get_full_name", required=False
@@ -16,6 +16,7 @@ class TaskSerializer(serializers.ModelSerializer):
     tags = serializers.SlugRelatedField(
         many=True, slug_field="name", queryset=Tag.objects.all()
     )
+    project = serializers.PrimaryKeyRelatedField(read_only=True)
 
     # date_due = serializers.DateTimeField(format="%B, %d %Y", required=False)
 
@@ -33,6 +34,7 @@ class TaskSerializer(serializers.ModelSerializer):
             "priority",
             "tags",
             "column",
+            "project",
             "column_title",
             "date_created",
         ]
@@ -43,6 +45,9 @@ class TaskSerializer(serializers.ModelSerializer):
         for tag_name in data.get("tags", []):
             Tag.objects.get_or_create(name=tag_name)
         return super().to_internal_value(data)
+
+    def update(self, instance, validated_data):
+        return super().update(instance, validated_data)
 
 
 class BoardSerializer(serializers.ModelSerializer):
