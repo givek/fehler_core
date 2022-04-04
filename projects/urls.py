@@ -6,6 +6,7 @@ from .views import (
     ListProjects,
     DeleteProject,
     ProjectInfo,
+    ProjectMembers,
     ProjectTasks,
     UpdateProject,
     AddProjectMember,
@@ -42,5 +43,10 @@ urlpatterns = [
         "<str:space_name>/<str:project_name>/user_tasks/",
         ProjectTasks.as_view(),
         name="user_tasks",
+    ),
+    path(
+        "<int:project_id>/project-members/",
+        ProjectMembers.as_view(),
+        name="project_members",
     ),
 ]

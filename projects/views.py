@@ -1,3 +1,4 @@
+from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
@@ -5,6 +6,7 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from django.utils import timezone
 
 from fehler_auth.models import User
+from fehler_auth.serializers import UserSerializer
 
 from .serializers import (
     ProjectSerializer,
@@ -193,4 +195,19 @@ class ProjectTasks(APIView):
         project = Project.objects.filter(space=space).get(name=project_name)
         tasks = Task.objects.filter(project=project).filter(assignee=request.user)
         serializer = TaskSerializer(tasks, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class ProjectMembers(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, project_id):
+        """
+        Return a list of all tasks associated with a particular space of a particular user.
+        """
+
+        project = get_object_or_404(Project, id=project_id)
+        project_members = project.get_members()
+        print("proejct meber", project_members)
+        serializer = UserSerializer(project_members, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
