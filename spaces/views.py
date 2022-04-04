@@ -1,9 +1,11 @@
+from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import AllowAny, IsAuthenticated
 
 from fehler_auth.models import User
+from fehler_auth.serializers import UserSerializer
 
 from .serializers import SpaceSerializer
 from .models import SpaceMembership
@@ -56,7 +58,7 @@ class CreateSpace(APIView):
         space = Space.objects.get(id=space_id)
         # invite = Invite.objects.get(email=user.email)
         member = SpaceMembership.objects.create(
-            member=user, space=space, type_of_member="Owner"
+            member=user, space=space, type_of_member=SpaceMembership.OWNER
         )
         member.save()
 
@@ -71,3 +73,18 @@ class DeleteSpace(APIView):
         space = Space.objects.get(id=space_id)
         space.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class SpaceMembers(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, space_name):
+        """
+        Return a list of all tasks associated with a particular space of a particular user.
+        """
+
+        space = get_object_or_404(Space, name=space_name)
+        space_members = space.get_members()
+        print("space meber", space_members)
+        serializer = UserSerializer(space_members, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
