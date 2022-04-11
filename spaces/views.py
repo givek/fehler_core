@@ -3,6 +3,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import AllowAny, IsAuthenticated
+from boards.models import Task
+from boards.serializers import TaskSerializer
 
 from fehler_auth.models import User
 from fehler_auth.serializers import UserSerializer
@@ -12,6 +14,8 @@ from rest_framework.validators import ValidationError
 from .serializers import SpaceSerializer
 from .models import SpaceMembership
 from .models import Space
+
+from projects.models import Project
 
 
 class ListSpaces(APIView):
@@ -94,4 +98,19 @@ class SpaceMembers(APIView):
         space_members = space.get_members()
         print("space meber", space_members)
         serializer = UserSerializer(space_members, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class SpaceTasks(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, space_name):
+        """
+        Return a list of all tasks associated with a particular space of a particular user.
+        """
+
+        space = Space.objects.get(name=space_name)
+        projects = Project.objects.filter(space=space)
+        tasks = Task.objects.filter(project__in=projects).filter(assignee=request.user)
+        serializer = TaskSerializer(tasks, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)

@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import CreateSpace, ListSpaces, DeleteSpace, SpaceMembers
+from .views import CreateSpace, ListSpaces, DeleteSpace, SpaceMembers, SpaceTasks
 
 
 urlpatterns = [
@@ -11,5 +11,10 @@ urlpatterns = [
         "<str:space_name>/space-members/",
         SpaceMembers.as_view(),
         name="project_members",
+    ),
+    path(
+        "<str:space_name>/space-tasks/",
+        SpaceTasks.as_view(),
+        name="user_tasks",
     ),
 ]
