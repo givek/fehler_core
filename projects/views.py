@@ -10,8 +10,9 @@ from fehler_auth.serializers import UserSerializer
 
 from .serializers import (
     ProjectSerializer,
+    RiskSerializer,
 )
-from .models import Project, ProjectMembership
+from .models import Project, ProjectMembership, Risk
 from spaces.models import Space
 from boards.models import Task
 from boards.serializers import TaskSerializer
@@ -211,3 +212,57 @@ class ProjectMembers(APIView):
         print("proejct meber", project_members)
         serializer = UserSerializer(project_members, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class ListRisks(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, space_name, project_name):
+        """
+        Return a list of all tasks associated with a particular project.
+        """
+        project = Project.objects.get(name=project_name)
+        risks = Risk.objects.filter(project=project.id)
+        serializer = RiskSerializer(risks, many=True)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class CreateRisk(APIView):
+    def post(self, request, space_id, project_id):
+        """
+        Create a new risk with provided credentials.
+        """
+        risk_serializer = RiskSerializer(data=request.data)
+        if risk_serializer.is_valid(raise_exception=True):
+            new_risk = risk_serializer.save()
+            # risk_serializer.save()
+
+            if new_risk:
+                risks = Risk.objects.filter(project=project_id)
+                serializer = RiskSerializer(risks, many=True)
+                return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(risk_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class UpdateRisk(APIView):
+    def put(self, request, risk_id):
+        """
+        Update a risk with provided credentials.
+        """
+        risk = Risk.objects.get(id=risk_id)
+        risk_serializer = RiskSerializer(risk, data=request.data)
+        if risk_serializer.is_valid(raise_exception=True):
+            risk_serializer.save()
+            return Response(risk_serializer.data, status=status.HTTP_200_OK)
+        return Response(risk_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class DeleteRisk(APIView):
+    def delete(self, request, risk_id):
+        """
+        Delete a risk with provided credentials.
+        """
+        risk = Risk.objects.get(id=risk_id)
+        risk.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)

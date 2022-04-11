@@ -3,13 +3,17 @@ from django.urls import path
 
 from .views import (
     CreateProject,
+    CreateRisk,
+    DeleteRisk,
     ListProjects,
     DeleteProject,
+    ListRisks,
     ProjectInfo,
     ProjectMembers,
     ProjectTasks,
     UpdateProject,
     AddProjectMember,
+    UpdateRisk,
 )
 
 urlpatterns = [
@@ -49,4 +53,16 @@ urlpatterns = [
         ProjectMembers.as_view(),
         name="project_members",
     ),
+    path(
+        "<str:space_name>/<str:project_name>/risks/",
+        ListRisks.as_view(),
+        name="list_risks",
+    ),
+    path(
+        "<int:space_id>/<int:project_id>/create-risk/",
+        CreateRisk.as_view(),
+        name="create_risk",
+    ),
+    path("<int:risk_id>/update-risk/", UpdateRisk.as_view(), name="update_risk"),
+    path("<int:risk_id>/delete-risk/", DeleteRisk.as_view(), name="delete_risk"),
 ]
