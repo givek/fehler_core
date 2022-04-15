@@ -14,7 +14,7 @@ from .serializers import (
 )
 from .models import Project, ProjectMembership, Risk
 from spaces.models import Space
-from boards.models import Task
+from boards.models import Board, Column, Task
 from boards.serializers import TaskSerializer
 
 
@@ -139,6 +139,19 @@ class CreateProject(APIView):
                 project_memberships = ProjectMembership.objects.filter(
                     user=request.user
                 )
+
+                project_board = Board.objects.create(
+                    name=f"{new_project.name}-board", project=new_project
+                )
+
+                Column.objects.create(
+                    title="Backlog", board=project_board, column_order=1
+                )
+                Column.objects.create(
+                    title="Doing", board=project_board, column_order=2
+                )
+                Column.objects.create(title="Done", board=project_board, column_order=3)
+
                 user_projects = [
                     {
                         "id": project_membership.project_id,
@@ -202,12 +215,11 @@ class ProjectTasks(APIView):
 class ProjectMembers(APIView):
     permission_classes = [IsAuthenticated]
 
-    def get(self, request, project_id):
+    def get(self, request, space_name, project_name):
         """
         Return a list of all tasks associated with a particular space of a particular user.
         """
-
-        project = get_object_or_404(Project, id=project_id)
+        project = get_object_or_404(Project, name=project_name)
         project_members = project.get_members()
         print("proejct meber", project_members)
         serializer = UserSerializer(project_members, many=True)
@@ -229,7 +241,7 @@ class ListRisks(APIView):
 
 
 class CreateRisk(APIView):
-    def post(self, request, space_id, project_id):
+    def post(self, request, space_name, project_name):
         """
         Create a new risk with provided credentials.
         """
@@ -239,7 +251,8 @@ class CreateRisk(APIView):
             # risk_serializer.save()
 
             if new_risk:
-                risks = Risk.objects.filter(project=project_id)
+                project = Project.objects.get(name=project_name)
+                risks = Risk.objects.filter(project=project)
                 serializer = RiskSerializer(risks, many=True)
                 return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(risk_serializer.errors, status=status.HTTP_400_BAD_REQUEST)

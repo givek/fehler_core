@@ -41,7 +41,7 @@ urlpatterns = [
     path(
         "<str:space_name>/<str:project_name>/info/",
         ProjectInfo.as_view(),
-        name="add_project_member",
+        name="project_info",
     ),
     path(
         "<str:space_name>/<str:project_name>/user_tasks/",
@@ -49,7 +49,7 @@ urlpatterns = [
         name="user_tasks",
     ),
     path(
-        "<int:project_id>/project-members/",
+        "<str:space_name>/<str:project_name>/project-members/",
         ProjectMembers.as_view(),
         name="project_members",
     ),
@@ -59,7 +59,7 @@ urlpatterns = [
         name="list_risks",
     ),
     path(
-        "<int:space_id>/<int:project_id>/create-risk/",
+        "<str:space_name>/<str:project_name>/create-risk/",
         CreateRisk.as_view(),
         name="create_risk",
     ),
