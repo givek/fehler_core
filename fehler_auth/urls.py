@@ -13,7 +13,7 @@ urlpatterns = [
     path("register/", RegisterUser.as_view(), name="create_user"),
     path("token/", CustomObtainAuthToken.as_view(), name="token_obtain"),
     # path('<space_id>/invite/', views.UserInvite.as_view(), name='invite'),
-    path("invite/", InviteUserApi.as_view(), name="inviteapi"),
+    path("<str:space_name>/invite/", InviteUserApi.as_view(), name="inviteapi"),
     path(
         "<space_id>/activate/<uid64>/<token>/",
         VerificationView.as_view(),

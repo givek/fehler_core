@@ -56,7 +56,7 @@ class Invite(models.Model):
 
     uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     space = models.ForeignKey("spaces.Space", on_delete=models.CASCADE)
-    email = models.EmailField(unique=True, max_length=255)
+    email = models.EmailField(max_length=255)
     member_type = models.CharField(
         max_length=35,
         choices=TYPE_OF_MEMBER_CHOICES,
@@ -66,6 +66,9 @@ class Invite(models.Model):
     )
     date_sent = models.DateTimeField(default=timezone.now)
     is_active = models.BooleanField(default=True)
+
+    class Meta:
+        unique_together = ("space", "email")
 
     def __str__(self):
         return self.email

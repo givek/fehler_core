@@ -51,12 +51,24 @@ class UserInviteForm(forms.ModelForm):
 
 class UserInviteRegisterForm(forms.ModelForm):
     password = forms.CharField(
-        widget=forms.PasswordInput(attrs={"placeholder": "●●●●●●●●●●"})
+        widget=forms.PasswordInput(
+            attrs={"class": "password__input form__input", "placeholder": "●●●●●●●●●●"}
+        )
+    )
+    first_name = forms.CharField(
+        widget=forms.TextInput(
+            attrs={"class": "first__input form__input", "placeholder": "Jon"}
+        )
+    )
+    last_name = forms.CharField(
+        widget=forms.TextInput(
+            attrs={"class": "last__input form__input", "placeholder": "Smith"}
+        )
     )
 
     class Meta:
         model = User
-        fields = ["password"]
+        fields = ["password", "first_name", "last_name"]
 
 
 # from django import forms

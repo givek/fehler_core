@@ -38,12 +38,18 @@ class SpaceMembership(models.Model):
     member = models.ForeignKey("fehler_auth.User", on_delete=models.CASCADE)
     space = models.ForeignKey(Space, on_delete=models.CASCADE)
     invite = models.ForeignKey(
-        "fehler_auth.Invite", blank=True, null=True, on_delete=models.CASCADE
+        "fehler_auth.Invite",
+        blank=True,
+        null=True,
+        on_delete=models.CASCADE,
     )
     date_joined = models.DateTimeField(default=timezone.now)
     type_of_member = models.CharField(
         max_length=25, choices=TYPE_OF_MEMBER_CHOICES, blank=True, null=True
     )
+
+    class Meta:
+        unique_together = ("space", "member", "invite")
 
     def __str__(self):
         return self.member.email

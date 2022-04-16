@@ -63,25 +63,28 @@ class CustomObtainAuthToken(ObtainAuthToken):
 
 
 class InviteUserApi(APIView):
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
 
-    def post(self, request):
-        invite_serializer = InviteSerializer(data=request.data)
-        if invite_serializer.is_valid():
+    def post(self, request, space_name):
+        space = Space.objects.get(name=space_name)
+        invite_serializer = InviteSerializer(
+            data={"email": request.data["email"], "space": space.id}
+        )
+        if invite_serializer.is_valid(raise_exception=True):
             new_invite = invite_serializer.save()
             user_email = request.data["email"]
             created = self.create_unusbale_user(user_email)
-            if created:
-                domain = get_current_site(request).domain
-                self.send_invite(new_invite, user_email, domain, request.data["space"])
+            domain = get_current_site(request).domain
+            self.send_invite(new_invite, user_email, domain, space.id)
 
             if new_invite:
                 return Response(status=status.HTTP_200_OK)
-        return Response(status=status.HTTP_400_BAD_REQUEST)  # send errors
+        return Response(invite_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def create_unusbale_user(self, email):
         user, created = User.objects.get_or_create(email=email)
         if created:
+            user.is_active = False
             user.set_unusable_password()
             user.save()
             return True
@@ -107,25 +110,33 @@ class VerificationView(View):
             # return redirect('login')
             return HttpResponseNotFound("<h1>token check invalid</h1>")
 
-        invite = get_object_or_404(Invite, email=user.email)
+        invite = get_object_or_404(Invite, email=user.email, space=space_id)
         if not invite.is_valid():
             return HttpResponseNotFound("<h1>invite not found</h1>")
 
         self.create_space_membership(user, invite, space_id)
 
+        if user.is_active:
+            return redirect("http://localhost:3000/login")
+
         # data = {'email': user.email}
         form = self.form_class()
 
-        return render(request, self.template_name, {"form": form})
+        return render(request, self.template_name, {"form": form, "email": user.email})
 
     def post(self, request, space_id, uid64, token):
         form = self.form_class(request.POST)
         if form.is_valid():
             form.save(commit=False)
             password = form.cleaned_data["password"]
+            first_name = form.cleaned_data["first_name"]
+            last_name = form.cleaned_data["last_name"]
 
             user = self.decode_user(uid64)
             user.set_password(password)
+            user.first_name = first_name
+            user.last_name = last_name
+            user.is_active = True
             user.save()
 
             return redirect("http://localhost:3000/login")
