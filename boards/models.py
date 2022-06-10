@@ -33,6 +33,7 @@ class Column(models.Model):
         return f"{self.title}"
 
 
+# TODO: check if this model in unused.
 class Label(models.Model):
     name = models.CharField(max_length=120)
     color = models.CharField(max_length=120)
@@ -40,9 +41,6 @@ class Label(models.Model):
 
     def __str__(self):
         return self.name
-
-
-from django.db.models import Count, F, Value
 
 
 class Tag(models.Model):
