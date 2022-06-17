@@ -2,37 +2,42 @@ from django.urls import path
 
 
 from .views import (
-    CreateProject,
+    # CreateProject,
+    # ListProjects,
+    # UpdateProject,
+    # DeleteProject,
+    Projects,
     CreateRisk,
-    DeleteRisk,
-    ListProjects,
-    DeleteProject,
     ListRisks,
-    ProjectInfo,
-    ProjectMembers,
-    ProjectTasks,
-    UpdateProject,
-    AddProjectMember,
     UpdateRisk,
+    DeleteRisk,
+    ProjectInfo,
+    ProjectTasks,
+    ProjectMembers,
+    AddProjectMember,
 )
 
 urlpatterns = [
-    path("<str:space_name>/projects/", ListProjects.as_view(), name="list_projects"),
-    path(
-        "<str:space_name>/create-project/",
-        CreateProject.as_view(),
-        name="create_project",
-    ),
-    path(
-        "delete_project/<int:project_id>/",
-        DeleteProject.as_view(),
-        name="delete_project",
-    ),
-    path(
-        "update_project/<int:project_id>/",
-        UpdateProject.as_view(),
-        name="update_project",
-    ),
+    # path("<str:space_name>/projects/", ListProjects.as_view(), name="list_projects"),
+    # path(
+    #     "<str:space_name>/create-project/",
+    #     CreateProject.as_view(),
+    #     name="create_project",
+    # ),
+    # path(
+    #     "delete_project/<int:project_id>/",
+    #     DeleteProject.as_view(),
+    #     name="delete_project",
+    # ),
+    # path(
+    #     "update_project/<int:project_id>/",
+    #     UpdateProject.as_view(),
+    #     name="update_project",
+    # ),
+    # URL to handle requests without indentifiers. eg: Projects: GET and POST
+    path("<str:space_name>/projects/", Projects.as_view(), name="projects"),
+    # URL to handle request with indentifiers. eg: Projects: DELETE and PUT
+    path("projects/<int:project_id>/", Projects.as_view(), name="projects"),
     path(
         "add_project_member/<str:space_name>/<str:project_name>/",
         AddProjectMember.as_view(),
