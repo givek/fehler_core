@@ -16,24 +16,7 @@ from spaces.models import Space
 from projects.models import Project
 
 
-class CreateBoard(APIView):
-    def post(self, request):
-        """
-        Create a new board with provided credentials.
-        """
-        board_serializer = BoardSerializer(data=request.data)
-        if board_serializer.is_valid(raise_exception=True):
-            new_board = board_serializer.save()
-            if new_board:
-                boards = Board.objects.all()
-                board_serializer = BoardSerializer(boards, many=True)
-                return Response(board_serializer.data, status=status.HTTP_200_OK)
-        return Response(board_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-class ListTasks(APIView):
-    # permission_classes = [IsAuthenticated]
-
+class Tasks(APIView):
     def get(self, request, space_name, project_name, board_id):
         """
         Return a list of all tasks associated with a particular project.
@@ -47,9 +30,7 @@ class ListTasks(APIView):
 
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-
-class CreateTask(APIView):
-    def post(self, request, space_name, project_name):
+    def post(self, request, space_name, project_name, board_id):
         """
         Create a new task with provided credentials.
         """
@@ -93,19 +74,7 @@ class CreateTask(APIView):
             return Response(status=status.HTTP_200_OK)
         return Response(task_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
-class DeleteTask(APIView):
-    def delete(self, request, task_id):
-        """
-        Delete a task with provided credentials.
-        """
-        task = Task.objects.get(id=task_id)
-        task.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
-
-
-class UpdateTask(APIView):
-    def put(self, request, task_id):
+    def put(self, request, space_name, project_name, board_id, task_id):
         """
         Update a task with provided credentials.
         """
@@ -122,6 +91,122 @@ class UpdateTask(APIView):
             task_serializer.save()
             return Response(task_serializer.data, status=status.HTTP_200_OK)
         return Response(task_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, space_name, project_name, board_id, task_id):
+        """
+        Delete a task with provided credentials.
+        """
+        task = Task.objects.get(id=task_id)
+        task.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class CreateBoard(APIView):
+    def post(self, request):
+        """
+        Create a new board with provided credentials.
+        """
+        board_serializer = BoardSerializer(data=request.data)
+        if board_serializer.is_valid(raise_exception=True):
+            new_board = board_serializer.save()
+            if new_board:
+                boards = Board.objects.all()
+                board_serializer = BoardSerializer(boards, many=True)
+                return Response(board_serializer.data, status=status.HTTP_200_OK)
+        return Response(board_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+# class ListTasks(APIView):
+#     # permission_classes = [IsAuthenticated]
+
+#     def get(self, request, space_name, project_name, board_id):
+#         """
+#         Return a list of all tasks associated with a particular project.
+#         """
+
+#         # TODO: search project inside a space.
+#         # board = Board.objects.get(id=board_id)
+
+#         tasks = Task.objects.filter(column__board=board_id)
+#         serializer = TaskSerializer(tasks, many=True)
+
+#         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+# class CreateTask(APIView):
+#     def post(self, request, space_name, project_name):
+#         """
+#         Create a new task with provided credentials.
+#         """
+#         task_serializer = TaskSerializer(data=request.data)
+
+#         print(task_serializer)
+
+#         project = Project.objects.get(id=request.data["project"])
+
+#         board = Board.objects.filter(project=project).first()
+
+#         first_column = Column.objects.filter(board=board).first()
+
+#         request.data["column"] = first_column.id
+
+#         if task_serializer.is_valid(raise_exception=True):
+#             new_task = task_serializer.save(project=project, column=first_column)
+
+#             print("newtaskasdf")
+#             print("newtask", new_task)
+
+#             if new_task:
+#                 tasks = Task.objects.all()
+
+#                 # project_tasks = [
+#                 #     {
+#                 #         "id": task.id,
+#                 #         "name": task.name,
+#                 #         "project": task.project.name,
+#                 #         "type": task.type,
+#                 #         "description": task.description,
+#                 #         "assignee": task.assignee.email if task.assignee else None,
+#                 #         "labels": task.labels,
+#                 #         "reporter": task.reporter.email if task.reporter else None,
+#                 #         "status": task.status,
+#                 #     }
+#                 #     for task in tasks
+#                 # ]
+
+#                 # project_tasks = TaskSerializer(tasks, many=True)
+#             return Response(status=status.HTTP_200_OK)
+#         return Response(task_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+# class DeleteTask(APIView):
+#     def delete(self, request, task_id):
+#         """
+#         Delete a task with provided credentials.
+#         """
+#         task = Task.objects.get(id=task_id)
+#         task.delete()
+#         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+# class UpdateTask(APIView):
+#     def put(self, request, task_id):
+#         """
+#         Update a task with provided credentials.
+#         """
+#         task = Task.objects.get(id=task_id)
+
+#         fields_to_remove = ["assignee_name", "reporter_name", "project", "column_title"]
+
+#         for k in fields_to_remove:
+#             request.data.pop(k, None)
+
+#         task_serializer = TaskSerializer(task, data=request.data)
+#         if task_serializer.is_valid(raise_exception=True):
+#             print("valid")
+#             task_serializer.save()
+#             return Response(task_serializer.data, status=status.HTTP_200_OK)
+#         return Response(task_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class AssignTask(APIView):
