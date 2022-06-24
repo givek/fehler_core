@@ -1,17 +1,16 @@
-
 # Fehler API - Django Backend
 
 Fehler is a project management software which let teams plan, track and manage software developement
 projects.
 
-
-
+This is the fehler REST API developed to provide and store data for [Fehler Website](https://github.com/givek/fehler_web/).
 
 ## Technologies
 
 - Python
 - Django
 - Django Rest Framework
+
 ## Getting Started
 
 To get a local copy up and running follow these simple steps:
@@ -62,12 +61,17 @@ To get a local copy up and running follow these simple steps:
    $ python manage.py runserver
    ```
 
+## Entity-Relationship Diagram
+
+Created with [Lucidchart](https://www.lucidchart.com/)
+
+![fehler-schema](./fehler-system-design.png)
+
 ## Authors
 
 - Vivek Gandharkar - [givek](https://github.com/givek/)
 - Dhaval Chaudhari - [dhavall13](https://github.com/dhavall13/)
 
-
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE.md](../main/LICENSE) file for details
+This project is licensed under the MIT License - see the [LICENSE](../main/LICENSE) file for details
